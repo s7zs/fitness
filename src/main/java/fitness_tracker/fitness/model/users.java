@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Setter
@@ -87,6 +88,14 @@ public class users {
         @Valid
         @OneToOne
         private nutritionplan nutrition;
+
+        @ManyToOne
+        @JoinColumn(name = "coach_id")
+        private Coach coach;
+        @OneToMany(mappedBy = "users_login")
+        private List< LoginRegister> loginRegister;
+        @OneToMany(mappedBy = "users_note")
+        private List <Note >note;
 
 }
 
