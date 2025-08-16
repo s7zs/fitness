@@ -20,7 +20,7 @@ public class users {
         @Id
         @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "progress_seq")
         @SequenceGenerator(name = "progress_seq", sequenceName = "progress_sequence", allocationSize = 600)
-        private long id;
+        private long userid;
 
         @NotBlank(message = "Username is required")
         @Size(min = 3, max = 20, message = "Username must be between 3 and 20 characters")
@@ -47,17 +47,17 @@ public class users {
 
         @Positive(message = "Weight must be positive")
         @Max(value = 500, message = "Weight must be less than 500 kg")
-        private float weight;  // Fixed typo in field name (was 'wight')
+        private float weight;
 
         @Positive(message = "Height must be positive")
         @Max(value = 250, message = "Height must be less than 250 cm")
-        private float height;  // Fixed typo in field name (was 'hight')
+        private float height;
 
         @Size(max = 500, message = "Past health conditions cannot exceed 500 characters")
         private String past_health_conditions;
 
         @NotNull(message = "User role is required")
-        @Pattern(regexp = "[AT]", message = "User role must be 'A' (admin) or 'T' (trainer)")
+        @Pattern(regexp = "[AT]", message = "User role must be 'A' (admin) or 'u' (user)")
         private char userrole;
 
         @NotNull(message = "Membership status must be specified")
@@ -79,7 +79,16 @@ public class users {
         @Valid
         @OneToOne
         private progress progress;
-    }
+
+        @Valid
+        @OneToOne
+        private  workoutplan workout;
+
+        @Valid
+        @OneToOne
+        private nutritionplan nutrition;
+
+}
 
 
 

@@ -37,7 +37,7 @@ public class progress {
 
     @Valid
     @OneToOne
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "userid")
     private users user;
 
 
