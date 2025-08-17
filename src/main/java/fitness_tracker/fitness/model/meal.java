@@ -2,6 +2,9 @@ package fitness_tracker.fitness.model;
 
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.DecimalMax;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,15 +25,22 @@ public class meal {
     @SequenceGenerator(name = "progress_seq", sequenceName = "progress_sequence", allocationSize = 600)
     private long meal_id;
 
+    @Size(min = 5, max = 100)
     private String meal_name;
 
     private Date time;
 
-    private String gramofcarb;
+    @DecimalMin("0.1")
+    @DecimalMax("50.9")
+    private double gramofcarb;
 
-    private String gramofprotien;
+    @DecimalMin("0.1")
+    @DecimalMax("50.9")
+    private double gramofprotien;
 
-    private String gramoffat;
+    @DecimalMin("0.1")
+    @DecimalMax("50.9")
+    private double gramoffat;
 
     @ManyToMany(mappedBy = "meals")
     private Set<nutritionplan> nutritionplans;

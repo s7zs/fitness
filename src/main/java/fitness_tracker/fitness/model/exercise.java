@@ -1,11 +1,14 @@
 package fitness_tracker.fitness.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.Set;
@@ -22,10 +25,13 @@ public class exercise {
     @SequenceGenerator(name = "progress_seq", sequenceName = "progress_sequence", allocationSize = 600)
     private Long exerciseid;
 
+    @NotNull
     private String exercisename;
 
-    private Date duration;
+    @Positive
+    private Duration duration;
 
+    @Lob
     private byte[] video;
 
     private LocalDate upload;
