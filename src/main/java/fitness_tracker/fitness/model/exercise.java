@@ -1,0 +1,35 @@
+package fitness_tracker.fitness.model;
+
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import java.time.LocalDate;
+import java.util.Date;
+import java.util.Set;
+
+@Entity
+@AllArgsConstructor
+@NoArgsConstructor
+@Setter
+@Getter
+public class exercise {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "progress_seq")
+    @SequenceGenerator(name = "progress_seq", sequenceName = "progress_sequence", allocationSize = 600)
+    private Long exerciseid;
+
+    private String exercisename;
+
+    private Date duration;
+
+    private byte[] video;
+
+    private LocalDate upload;
+
+    @ManyToMany(mappedBy = "exercises")
+    private Set<workoutplan> workoutplans;
+}
