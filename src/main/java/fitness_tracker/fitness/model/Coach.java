@@ -1,6 +1,7 @@
 package fitness_tracker.fitness.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -8,22 +9,24 @@ import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.hibernate.annotations.Type;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.List;
-
+import java.util.Collection;
 @Entity
 @Setter
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Coach {
+public class Coach implements UserDetails {
 @Id
 @GeneratedValue(strategy = GenerationType.IDENTITY)
 private int coachid;
 
     @NotBlank(message = "Username is required")
-    @Size(min = 3, max = 20, message = "Username must be between 3 and 20 characters")
-private String  username;
+    @Email
+private String  email;
 
     @NotBlank(message = "Password is required")
     @Size(min = 8, message = "Password must be at least 8 characters long")
@@ -42,6 +45,9 @@ private int age;
 
 private List<String> experince;
 
+    @Enumerated(EnumType.STRING)
+    @Column( nullable = false)
+    private ROLE userrole = ROLE.coach; // default value
 
 private boolean issusbended;
 
@@ -53,4 +59,115 @@ private List<LoginRegister> loginRegister;
 @OneToMany(mappedBy = "coach")
 private List<Note> note;
 
+    public int getCoachid() {
+        return coachid;
+    }
+
+    public void setCoachid(int coachid) {
+        this.coachid = coachid;
+    }
+
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getPhonenumber() {
+        return phonenumber;
+    }
+
+    public void setPhonenumber(String phonenumber) {
+        this.phonenumber = phonenumber;
+    }
+
+    public char getGender() {
+        return gender;
+    }
+
+    public void setGender(char gender) {
+        this.gender = gender;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    public List<String> getExperince() {
+        return experince;
+    }
+
+    public void setExperince(List<String> experince) {
+        this.experince = experince;
+    }
+
+    public boolean isIssusbended() {
+        return issusbended;
+    }
+
+    public void setIssusbended(boolean issusbended) {
+        this.issusbended = issusbended;
+    }
+
+    public List<users> getUsers() {
+        return users;
+    }
+
+    public void setUsers(List<users> users) {
+        this.users = users;
+    }
+
+    public List<LoginRegister> getLoginRegister() {
+        return loginRegister;
+    }
+
+    public void setLoginRegister(List<LoginRegister> loginRegister) {
+        this.loginRegister = loginRegister;
+    }
+
+    public List<Note> getNote() {
+        return note;
+    }
+
+    public void setNote(List<Note> note) {
+        this.note = note;
+    }
+        @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        // Return the authorities for the user
+        return null; // Replace with actual implementation
+    }
+    
+    @Override
+    public String getPassword() {
+        return this.password; // Replace with actual password field
+    }
+
+    @Override
+    public String getUsername() {
+        return this.email; // Replace with actual username field
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true; // Adjust logic as needed
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true; // Adjust logic as needed
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true; // Adjust logic as needed
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true; // Adjust logic as needed
+    }
 }

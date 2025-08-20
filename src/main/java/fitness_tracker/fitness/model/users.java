@@ -1,5 +1,6 @@
 package fitness_tracker.fitness.model;
 
+import com.fasterxml.jackson.databind.ser.std.StdKeySerializers;
 import jakarta.persistence.*;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
@@ -7,25 +8,28 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
+import fitness_tracker.fitness.model.ROLE;
 import java.util.Date;
 import java.util.List;
+import java.util.Collection;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 @Entity
 @Setter
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class users {
+public class users implements UserDetails{
 
         @Id
         @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "progress_seq")
         @SequenceGenerator(name = "progress_seq", sequenceName = "progress_sequence", allocationSize = 600)
         private long userid;
 
-        @NotBlank(message = "Username is required")
-        @Size(min = 3, max = 20, message = "Username must be between 3 and 20 characters")
-        private String username;
+        @Email(message = "email should be valid")
+        private String email;
 
         @NotBlank(message = "Password is required")
         @Size(min = 8, message = "Password must be at least 8 characters long")
@@ -58,8 +62,8 @@ public class users {
         private String past_health_conditions;
 
         @NotNull(message = "User role is required")
-        @Pattern(regexp = "[AT]", message = "User role must be 'A' (admin) or 'u' (user)")
-        private char userrole;
+        @Enumerated(EnumType.STRING)
+        private ROLE userrole;
 
         @NotNull(message = "Membership status must be specified")
         private boolean ismember;
@@ -96,7 +100,42 @@ public class users {
         private List< LoginRegister> loginRegister;
         @OneToMany(mappedBy = "users_note")
         private List <Note >note;
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        // Return the authorities for the user
+        return null; // Replace with actual implementation
+    }
 
+    
+    @Override
+    public String getPassword() {
+        return this.password; // Replace with actual password field
+    }
+
+    @Override
+    public String getUsername() {
+        return this.email; // Replace with actual username field
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true; // Adjust logic as needed
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true; // Adjust logic as needed
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true; // Adjust logic as needed
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return !this.isIssuspended(); // Adjust logic as needed
+    }
 }
 
 
