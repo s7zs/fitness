@@ -2,15 +2,20 @@ package fitness_tracker.fitness.secuirty;
 
 
 import java.security.AuthProvider;
+
+import fitness_tracker.fitness.service.userservice;
 import org.springframework.security.authentication.AuthenticationProvider;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -20,12 +25,12 @@ import fitness_tracker.fitness.secuirty.jwt.jwtauth;
 @EnableWebSecurity
 public class websecuirtyconfig   {
     private final jwtauth jwtauth;
-    private final AuthenticationProvider authenticationProvider; // Changed type name
+    private final userservice userservice; // Changed type name
     
     @Autowired
-    public websecuirtyconfig(jwtauth jwtauth, AuthenticationProvider authenticationProvider) { // Changed parameter type
+    public websecuirtyconfig(jwtauth jwtauth,userservice userservice) { // Changed parameter type
         this.jwtauth = jwtauth;
-        this.authenticationProvider = authenticationProvider;
+      this.userservice = userservice;
     }
 
     @Bean // Add @Bean annotation
@@ -49,9 +54,21 @@ public class websecuirtyconfig   {
             .sessionManagement(session -> session
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             )
-            .authenticationProvider(authenticationProvider) // Use corrected field name
+            .authenticationProvider(authenticationProvider()) // Use corrected field name
             .addFilterBefore(jwtauth, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
+    }
+
+    private AuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+        authProvider.setUserDetailsService(userservice);
+        authProvider.setPasswordEncoder(passwordEncoder());
+        return authProvider;
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 }

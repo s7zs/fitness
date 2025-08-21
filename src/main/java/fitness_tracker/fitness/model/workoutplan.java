@@ -29,8 +29,12 @@ public class workoutplan {
     @JoinColumn(name = "userid")
     private users user;
 
-    @ManyToMany(mappedBy = "workoutplans")
-
+    @ManyToMany()
+    @JoinTable(
+            name = "workout_plan_exercises",
+            joinColumns = @JoinColumn(name = "workout_plan_id"),
+            inverseJoinColumns = @JoinColumn(name = "exercise_id")
+    )
     private List<exercise> exercises;
 
 

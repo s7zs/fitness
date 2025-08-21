@@ -95,9 +95,9 @@ public class users implements UserDetails{
         @ManyToOne
         @JoinColumn(name = "coach_id")
         private Coach coach;
-        @OneToMany(mappedBy = "users_login")
+        @OneToMany(mappedBy = "users")
         private List< LoginRegister> loginRegister;
-        @OneToMany(mappedBy = "users_note")
+        @OneToMany(mappedBy = "users")
         private List <Note >note;
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

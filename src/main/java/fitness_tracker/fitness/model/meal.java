@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -43,6 +44,6 @@ public class meal {
     private double gramoffat;
 
     @ManyToMany(mappedBy = "meals")
-    private Set<nutritionplan> nutritionplans;
+    private Set<nutritionplan> nutritionplans = new HashSet<>();
 
 }

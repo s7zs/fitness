@@ -31,7 +31,7 @@ private Date startat;
 private Date endat;
 
 @ManyToOne
-@JoinColumn(name = "coach_id")
+@JoinColumn(name = "loginRegister")
 private Coach coach;
 @ManyToOne
 @JoinColumn(name = "user_id")

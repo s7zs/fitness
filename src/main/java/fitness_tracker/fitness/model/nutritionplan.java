@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @AllArgsConstructor
@@ -33,4 +35,12 @@ public class nutritionplan {
     @OneToOne
     @JoinColumn( name = "userid")
     private users user;
+
+    @ManyToMany
+    @JoinTable(
+            name = "nutrition_plan_mealS",
+            joinColumns = @JoinColumn(name = "nutrition_plan_id"),
+            inverseJoinColumns = @JoinColumn(name = "meal_id")
+    )
+    private Set<meal> meals = new HashSet<>();
 }
