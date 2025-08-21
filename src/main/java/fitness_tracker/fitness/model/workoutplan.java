@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Positive;
 import lombok.*;
 
 import java.time.Duration;
+import java.util.List;
 
 @Entity
 @AllArgsConstructor
@@ -27,6 +28,10 @@ public class workoutplan {
     @OneToOne
     @JoinColumn(name = "userid")
     private users user;
+
+    @ManyToMany(mappedBy = "workoutplans")
+
+    private List<exercise> exercises;
 
 
 }

@@ -22,7 +22,7 @@ import java.util.Collection;
 public class Coach implements UserDetails {
 @Id
 @GeneratedValue(strategy = GenerationType.IDENTITY)
-private int coachid;
+private long coachid;
 
     @NotBlank(message = "Username is required")
     @Email
@@ -59,82 +59,6 @@ private List<LoginRegister> loginRegister;
 @OneToMany(mappedBy = "coach")
 private List<Note> note;
 
-    public int getCoachid() {
-        return coachid;
-    }
-
-    public void setCoachid(int coachid) {
-        this.coachid = coachid;
-    }
-
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getPhonenumber() {
-        return phonenumber;
-    }
-
-    public void setPhonenumber(String phonenumber) {
-        this.phonenumber = phonenumber;
-    }
-
-    public char getGender() {
-        return gender;
-    }
-
-    public void setGender(char gender) {
-        this.gender = gender;
-    }
-
-    public int getAge() {
-        return age;
-    }
-
-    public void setAge(int age) {
-        this.age = age;
-    }
-
-    public List<String> getExperince() {
-        return experince;
-    }
-
-    public void setExperince(List<String> experince) {
-        this.experince = experince;
-    }
-
-    public boolean isIssusbended() {
-        return issusbended;
-    }
-
-    public void setIssusbended(boolean issusbended) {
-        this.issusbended = issusbended;
-    }
-
-    public List<users> getUsers() {
-        return users;
-    }
-
-    public void setUsers(List<users> users) {
-        this.users = users;
-    }
-
-    public List<LoginRegister> getLoginRegister() {
-        return loginRegister;
-    }
-
-    public void setLoginRegister(List<LoginRegister> loginRegister) {
-        this.loginRegister = loginRegister;
-    }
-
-    public List<Note> getNote() {
-        return note;
-    }
-
-    public void setNote(List<Note> note) {
-        this.note = note;
-    }
         @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         // Return the authorities for the user

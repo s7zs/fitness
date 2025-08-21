@@ -11,6 +11,7 @@ import lombok.Setter;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -23,7 +24,7 @@ public class exercise {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "progress_seq")
     @SequenceGenerator(name = "progress_seq", sequenceName = "progress_sequence", allocationSize = 600)
-    private Long exerciseid;
+    private long exerciseid;
 
     @NotNull
     private String exercisename;
@@ -37,5 +38,8 @@ public class exercise {
     private LocalDate upload;
 
     @ManyToMany(mappedBy = "exercises")
-    private Set<workoutplan> workoutplans;
+    @JoinTable( name = "workoutplan" ,
+            joinColumns = @JoinColumn(name = "workoutid"),
+            inverseJoinColumns = @JoinColumn(name = "execriseid") )
+    private List<workoutplan> workoutplans;
 }

@@ -35,7 +35,7 @@ public class websecuirtyconfig   {
             .authorizeHttpRequests(auth -> auth
             .requestMatchers("/api/auth/**").permitAll()
             // User endpoints
-            .requestMatchers("/api/user/**").hasRole("USER")
+            .requestMatchers("/api/user/**").hasRole("user")
             .requestMatchers("/api/workout/view/**").hasAnyRole("user", "coach")
             .requestMatchers("/api/nutrition/view/**").hasAnyRole("user", "coach")
             // Coach endpoints

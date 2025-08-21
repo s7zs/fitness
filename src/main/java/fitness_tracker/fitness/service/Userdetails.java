@@ -6,6 +6,7 @@ import fitness_tracker.fitness.Repository.UserRepo;
 import fitness_tracker.fitness.Repository.CoachRepo;
 
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -22,7 +23,7 @@ public class Userdetails implements UserDetailsService {
     private final UserRepo userRepo;
     private final CoachRepo coachRepo;
 
-    
+    @Autowired
     public Userdetails(UserRepo userRepo, CoachRepo coachRepo) {
         this.userRepo = userRepo;
         this.coachRepo = coachRepo;

@@ -1,6 +1,5 @@
 package fitness_tracker.fitness.model;
 
-import com.fasterxml.jackson.databind.ser.std.StdKeySerializers;
 import jakarta.persistence.*;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
@@ -8,7 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import fitness_tracker.fitness.model.ROLE;
+
 import java.util.Date;
 import java.util.List;
 import java.util.Collection;

@@ -20,7 +20,7 @@ import java.util.Date;
 public class Note {
 @Id
 @GeneratedValue(strategy = GenerationType.IDENTITY)
-private int noteid;
+private long noteid;
 
 @FutureOrPresent
 private Date date;

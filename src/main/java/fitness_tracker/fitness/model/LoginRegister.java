@@ -20,7 +20,7 @@ import java.util.List;
 public class LoginRegister {
 @Id
 @GeneratedValue(strategy = GenerationType.IDENTITY)
-private int sessiionid;
+private long sessiionid;
 
 @PastOrPresent
 @NotNull

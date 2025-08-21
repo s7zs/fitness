@@ -8,6 +8,7 @@ import fitness_tracker.fitness.Repository.UserRepo;
 import fitness_tracker.fitness.Repository.CoachRepo;
 import fitness_tracker.fitness.secuirty.jwt.jwtservice;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -16,10 +17,12 @@ import java.util.Date;
 @Service
 @RequiredArgsConstructor
 public class AuthService {
-    
+    @Autowired
     private final UserRepo userRepo;
+    @Autowired
     private final CoachRepo coachRepo;
     private final AuthenticationManager authenticationManager;
+    @Autowired
     private final jwtservice jwtService;
     private final PasswordEncoder passwordEncoder;
     
