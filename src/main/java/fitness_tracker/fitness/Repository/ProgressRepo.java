@@ -8,6 +8,6 @@ import java.util.List;
 
 @Repository
 public interface ProgressRepo extends JpaRepository<progress,Long > {
-
+List<progress>findbyuserid (Long userid);
 
 }

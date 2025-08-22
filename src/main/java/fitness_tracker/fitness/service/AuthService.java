@@ -1,6 +1,7 @@
 package fitness_tracker.fitness.service;
 
 import fitness_tracker.fitness.dto.*;
+import fitness_tracker.fitness.model.Coach;
 import fitness_tracker.fitness.model.ROLE;
 import fitness_tracker.fitness.model.users;
 import fitness_tracker.fitness.Repository.UserRepo;
@@ -8,7 +9,6 @@ import fitness_tracker.fitness.Repository.CoachRepo;
 import fitness_tracker.fitness.secuirty.jwt.jwtservice;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -18,14 +18,20 @@ import java.util.Date;
 @Service
 @RequiredArgsConstructor
 public class AuthService {
+    @Autowired
+    @Lazy
     private final UserRepo userRepo;
+    @Autowired
+    @Lazy
     private final CoachRepo coachRepo;
     private final AuthenticationManager authenticationManager;
+    @Autowired
+    @Lazy
     private final jwtservice jwtService;
     private final PasswordEncoder passwordEncoder;
     
-    public authresponse register(RegisterUserRequest request) {
-        if (userRepo.existsByEmail(request.getEmail())) {
+    public authresponse register(register request) {
+        if (userRepo.ExistByEmail(request.getEmail())) {
             throw new RuntimeException("Email already exists");
         }
 
@@ -61,9 +67,9 @@ public class AuthService {
             )
         );
 
-        var user = userRepo.findByEmail(request.getEmail())
+        var user = userRepo.FindByEmail(request.getEmail())
                 .orElseGet(() -> {
-                    var coach = coachRepo.findByemail(request.getEmail())
+                    var coach = coachRepo.FindByEmail(request.getEmail())
                             .stream()
                             .findFirst()
                             .orElseThrow(() -> new RuntimeException("User not found"));
@@ -80,7 +86,7 @@ public class AuthService {
             token = jwtService.generateToken(user);
             role = user.getUserrole().name();
         } else {
-            var coach = coachRepo.findByemail(request.getEmail()).get(0);
+            var coach = coachRepo.FindByEmail(request.getEmail()).get(0);
             if (coach.isIssusbended()) {
                 throw new RuntimeException("Account is suspended");
             }

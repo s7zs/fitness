@@ -30,19 +30,18 @@ public class users implements UserDetails{
         @Email(message = "email should be valid")
         private String email;
 
-        @NotBlank(message = "Password is required")
+        //@NotBlank(message = "Password is required")
         @Size(min = 8, message = "Password must be at least 8 characters long")
         @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$",
                 message = "Password must contain at least one digit, one lowercase, one uppercase letter and one special character")
         private String password;
 
-        @NotBlank(message = "Phone number is required")
+       // @NotBlank(message = "Phone number is required")
         @Pattern(regexp = "^[+]?[(]?[0-9]{3}[)]?[-\\s.]?[0-9]{3}[-\\s.]?[0-9]{4,6}$",
                 message = "Invalid phone number format")
         private String phonenumber;
 
-        @NotNull(message = "Gender is required")
-        @Pattern(regexp = "[MF]", message = "Gender must be 'M' or 'F'")
+       // @NotNull(message = "Gender is required")
         private char gender;
 
         @Min(value = 12, message = "Age must be at least 12")
@@ -60,11 +59,11 @@ public class users implements UserDetails{
         @Size(max = 500, message = "Past health conditions cannot exceed 500 characters")
         private String past_health_conditions;
 
-        @NotNull(message = "User role is required")
+       // @NotNull(message = "User role is required")
         @Enumerated(EnumType.STRING)
         private ROLE userrole;
 
-        @NotNull(message = "Membership status must be specified")
+        //@NotNull(message = "Membership status must be specified")
         private boolean ismember;
 
         @PastOrPresent(message = "Start date must be in the past or present")
@@ -73,11 +72,11 @@ public class users implements UserDetails{
         @FutureOrPresent(message = "End date must be in the future or present")
         private Date enddate;
 
-        @NotBlank(message = "Goal is required")
+        //@NotBlank(message = "Goal is required")
         @Size(max = 200, message = "Goal cannot exceed 200 characters")
         private String goal;
 
-        @NotNull(message = "Suspended status must be specified")
+        //@NotNull(message = "Suspended status must be specified")
         private boolean issuspended;  // Fixed typo in field name (was 'issusbended')
 
         @Valid

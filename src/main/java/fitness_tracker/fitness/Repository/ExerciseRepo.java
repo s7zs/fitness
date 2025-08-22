@@ -7,5 +7,5 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 @Repository
 public interface ExerciseRepo extends JpaRepository<exercise,Long> {
-
+    List<exercise> findbyworkplanid (Long workplanid);
 }
