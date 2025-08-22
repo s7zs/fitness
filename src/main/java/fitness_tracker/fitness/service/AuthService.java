@@ -9,12 +9,16 @@ import fitness_tracker.fitness.Repository.CoachRepo;
 import fitness_tracker.fitness.secuirty.jwt.jwtservice;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.context.annotation.Primary;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.util.Date;
+
+
 @Service
 @RequiredArgsConstructor
 public class AuthService {
@@ -24,6 +28,8 @@ public class AuthService {
     @Autowired
     @Lazy
     private final CoachRepo coachRepo;
+    @Autowired
+    @Lazy
     private final AuthenticationManager authenticationManager;
     @Autowired
     @Lazy
@@ -31,9 +37,9 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     
     public authresponse register(register request) {
-        if (userRepo.ExistByEmail(request.getEmail())) {
-            throw new RuntimeException("Email already exists");
-        }
+      //  if (userRepo.ExistByEmail(request.getEmail())) {
+       //     throw new RuntimeException("Email already exists");
+      //  }
 
         var user = new users();
         user.setEmail(request.getEmail());

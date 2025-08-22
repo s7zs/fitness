@@ -4,6 +4,8 @@ package fitness_tracker.fitness.secuirty;
 import java.security.AuthProvider;
 
 import fitness_tracker.fitness.service.userservice;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +16,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -28,7 +32,7 @@ public class websecuirtyconfig   {
     private final userservice userservice; // Changed type name
     
     @Autowired
-    public websecuirtyconfig(jwtauth jwtauth,userservice userservice) { // Changed parameter type
+    public websecuirtyconfig(@Lazy  jwtauth jwtauth, @Lazy userservice userservice) { // Changed parameter type
         this.jwtauth = jwtauth;
       this.userservice = userservice;
     }
@@ -49,7 +53,7 @@ public class websecuirtyconfig   {
             .requestMatchers("/api/nutrition/manage/**").hasRole("coach")
             // Admin endpoints
             .requestMatchers("/api/admin/**").hasRole("admin")
-            .anyRequest().authenticated()
+
             )
             .sessionManagement(session -> session
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -66,6 +70,15 @@ public class websecuirtyconfig   {
         authProvider.setPasswordEncoder(passwordEncoder());
         return authProvider;
     }
+    @Bean
+    public AuthenticationManager authenticationManager() {return new AuthenticationManager() {
+        @Override
+        public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+            return null;
+        }
+    }; }
+
+
 
     @Bean
     public PasswordEncoder passwordEncoder() {

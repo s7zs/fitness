@@ -11,9 +11,6 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class register {
-    
-     
-        private long userid;
 
   
         private String email;
@@ -37,6 +34,7 @@ public class register {
        
         private String past_health_conditions;
 private Date startdate = new Date();
+private String goal;
 
 
 }
