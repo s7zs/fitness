@@ -5,6 +5,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,8 +26,7 @@ private long noteid;
 @FutureOrPresent
 private Date date;
 
-@Min( value = 10)
-@Max(value = 500)
+@Size(min = 10, max = 500, message = "Note content must be between 10 and 500 characters")
 private String content;
 
 

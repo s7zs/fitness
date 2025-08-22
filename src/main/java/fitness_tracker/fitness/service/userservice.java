@@ -32,7 +32,7 @@ public class userservice implements UserDetailsService {
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         // Try to find user
         List<Coach> coaches = new ArrayList<>();
-        users user = userRepo.FindByEmail(email)
+        users user = userRepo.findByEmail(email)
                 .orElseGet(() -> {
                     // If not found as user, try to find as coach
                     coaches.addAll(coachRepo.findByemail(email));

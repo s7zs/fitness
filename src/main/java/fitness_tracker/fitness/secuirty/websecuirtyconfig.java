@@ -60,6 +60,7 @@ public class websecuirtyconfig   {
         return http.build();
     }
 
+
     private AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
         authProvider.setUserDetailsService(userservice);

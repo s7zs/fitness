@@ -20,15 +20,15 @@ import java.util.List;
 public class LoginRegister {
 @Id
 @GeneratedValue(strategy = GenerationType.IDENTITY)
-private long sessiionid;
+private long sessionid;
 
 @PastOrPresent
 @NotNull
-private Date startat;
+private Date startdate;
 
 @FutureOrPresent
 @NotNull
-private Date endat;
+private Date endate;
 
 @ManyToOne
 @JoinColumn(name = "loginRegister")

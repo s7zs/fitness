@@ -1,7 +1,6 @@
 package fitness_tracker.fitness.service;
 
 import fitness_tracker.fitness.dto.*;
-import fitness_tracker.fitness.model.Coach;
 import fitness_tracker.fitness.model.ROLE;
 import fitness_tracker.fitness.model.users;
 import fitness_tracker.fitness.Repository.UserRepo;
@@ -9,6 +8,7 @@ import fitness_tracker.fitness.Repository.CoachRepo;
 import fitness_tracker.fitness.secuirty.jwt.jwtservice;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -18,22 +18,14 @@ import java.util.Date;
 @Service
 @RequiredArgsConstructor
 public class AuthService {
-    @Autowired
-    @Lazy
     private final UserRepo userRepo;
-
-    @Lazy
-    @Autowired
     private final CoachRepo coachRepo;
     private final AuthenticationManager authenticationManager;
-
-    @Lazy
-    @Autowired
     private final jwtservice jwtService;
     private final PasswordEncoder passwordEncoder;
     
-    public authresponse register(register request) {
-        if (userRepo.ExistByEmail(request.getEmail())) {
+    public authresponse register(RegisterUserRequest request) {
+        if (userRepo.existsByEmail(request.getEmail())) {
             throw new RuntimeException("Email already exists");
         }
 
@@ -69,7 +61,7 @@ public class AuthService {
             )
         );
 
-        var user = userRepo.FindByEmail(request.getEmail())
+        var user = userRepo.findByEmail(request.getEmail())
                 .orElseGet(() -> {
                     var coach = coachRepo.findByemail(request.getEmail())
                             .stream()
