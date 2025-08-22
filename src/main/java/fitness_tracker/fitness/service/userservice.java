@@ -35,7 +35,7 @@ public class userservice implements UserDetailsService {
         users user = userRepo.FindByEmail(email)
                 .orElseGet(() -> {
                     // If not found as user, try to find as coach
-                    coaches.addAll(coachRepo.FindByEmail(email));
+                    coaches.addAll(coachRepo.findByemail(email));
                     if (coaches.isEmpty()) {
                         throw new UsernameNotFoundException("User not found: " + email);
                     }

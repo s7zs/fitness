@@ -21,12 +21,14 @@ public class AuthService {
     @Autowired
     @Lazy
     private final UserRepo userRepo;
-    @Autowired
+
     @Lazy
+    @Autowired
     private final CoachRepo coachRepo;
     private final AuthenticationManager authenticationManager;
-    @Autowired
+
     @Lazy
+    @Autowired
     private final jwtservice jwtService;
     private final PasswordEncoder passwordEncoder;
     
@@ -69,7 +71,7 @@ public class AuthService {
 
         var user = userRepo.FindByEmail(request.getEmail())
                 .orElseGet(() -> {
-                    var coach = coachRepo.FindByEmail(request.getEmail())
+                    var coach = coachRepo.findByemail(request.getEmail())
                             .stream()
                             .findFirst()
                             .orElseThrow(() -> new RuntimeException("User not found"));
@@ -86,7 +88,7 @@ public class AuthService {
             token = jwtService.generateToken(user);
             role = user.getUserrole().name();
         } else {
-            var coach = coachRepo.FindByEmail(request.getEmail()).get(0);
+            var coach = coachRepo.findByemail(request.getEmail()).get(0);
             if (coach.isIssusbended()) {
                 throw new RuntimeException("Account is suspended");
             }
