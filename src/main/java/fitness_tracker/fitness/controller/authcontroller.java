@@ -5,18 +5,32 @@ import fitness_tracker.fitness.dto.*;
 import fitness_tracker.fitness.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.context.annotation.Primary;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")
-@RequiredArgsConstructor
+
 public class authcontroller {
 
     private final AuthService authService;
 
+    @Autowired
+    public authcontroller(@Lazy AuthService authService) {
+        this.authService = authService;
+    }
+
+    @GetMapping()
+    public String hello (){
+        return "hello";
+    }
+
     @PostMapping("/register")
-    public ResponseEntity<authresponse> register(@Valid @RequestBody RegisterUserRequest request) {
+    public ResponseEntity<authresponse> register(@Valid @RequestBody authrequest request) {
         return ResponseEntity.ok(authService.register(request));
     }
 
@@ -24,4 +38,5 @@ public class authcontroller {
     public ResponseEntity<authresponse> login(@Valid @RequestBody authrequest request) {
         return ResponseEntity.ok(authService.login(request));
     }
+
 }
