@@ -8,5 +8,5 @@ import java.util.List;
 @Repository
 public interface NutritionplanRepo extends JpaRepository<nutritionplan,Long > {
 
-List<nutritionplan> findbuuserid (Long userid);
+
 }

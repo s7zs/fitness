@@ -10,5 +10,5 @@ import java.util.List;
 
 @Repository
 public interface WorkoutplanRepo extends JpaRepository<workoutplan,Long > {
-List<workoutplan>finfbyuserid(Long userid);
+
 }
