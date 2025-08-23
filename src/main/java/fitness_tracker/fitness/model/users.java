@@ -11,128 +11,120 @@ import lombok.Setter;
 import java.util.Date;
 import java.util.List;
 import java.util.Collection;
+import java.util.ArrayList;
 
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 @Entity
+@Table(name = "users")
 @Setter
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class users implements UserDetails{
+public class users implements UserDetails {
 
-        @Id
-        @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "progress_seq")
-        @SequenceGenerator(name = "progress_seq", sequenceName = "progress_sequence", allocationSize = 600)
-        private long userid;
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "progress_seq")
+    @SequenceGenerator(name = "progress_seq", sequenceName = "progress_sequence", allocationSize = 600)
+    private long userid;
 
-        @Email(message = "email should be valid")
-        private String email;
+    @Column(unique = true)
+    @Email(message = "email should be valid")
+    private String email;
 
-        //@NotBlank(message = "Password is required")
-        @Size(min = 8, message = "Password must be at least 8 characters long")
-        @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$",
-                message = "Password must contain at least one digit, one lowercase, one uppercase letter and one special character")
-        private String password;
+    @NotBlank(message = "Password is required")
+    @Size(min = 8, message = "Password must be at least 8 characters long")
+    @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!?*()\\-_\\[\\]{}|;:,.<>]).{8,}$",
+            message = "Password must contain at least one digit, one lowercase, one uppercase letter and one special character")
+    private String password;
 
-       // @NotBlank(message = "Phone number is required")
-        @Pattern(regexp = "^[+]?[(]?[0-9]{3}[)]?[-\\s.]?[0-9]{3}[-\\s.]?[0-9]{4,6}$",
-                message = "Invalid phone number format")
-        private String phonenumber;
+    // Optional fields - no validation constraints
+    private String phonenumber;
+    private String gender;
+    private Integer age;
+    private Float weight;
+    private Float height;
+    private String past_health_conditions;
 
-       // @NotNull(message = "Gender is required")
-        private char gender;
+    @NotNull(message = "User role is required")
+    @Enumerated(EnumType.STRING)
+    private ROLE userrole;
 
-        @Min(value = 12, message = "Age must be at least 12")
-        @Max(value = 120, message = "Age must be less than 120")
-        private int age;
+    @NotNull(message = "Membership status must be specified")
+    private boolean ismember;
 
-        @Positive(message = "Weight must be positive")
-        @Max(value = 500, message = "Weight must be less than 500 kg")
-        private float weight;
+    @PastOrPresent(message = "Start date must be in the past or present")
+    private Date startdate;
 
-        @Positive(message = "Height must be positive")
-        @Max(value = 250, message = "Height must be less than 250 cm")
-        private float height;
+    @FutureOrPresent(message = "End date must be in the future or present")
+    private Date enddate;
 
-        @Size(max = 500, message = "Past health conditions cannot exceed 500 characters")
-        private String past_health_conditions;
+    private String goal;
 
-       // @NotNull(message = "User role is required")
-        @Enumerated(EnumType.STRING)
-        private ROLE userrole;
+    @NotNull(message = "Suspended status must be specified")
+    private boolean issuspended;
 
-        //@NotNull(message = "Membership status must be specified")
-        private boolean ismember;
+    @Valid
+    @OneToOne
+    private progress progress;
 
-        @PastOrPresent(message = "Start date must be in the past or present")
-        private Date startdate;
+    @Valid
+    @OneToOne
+    private workoutplan workout;
 
-        @FutureOrPresent(message = "End date must be in the future or present")
-        private Date enddate;
+    @Valid
+    @OneToOne
+    private nutritionplan nutrition;
 
-        //@NotBlank(message = "Goal is required")
-        @Size(max = 200, message = "Goal cannot exceed 200 characters")
-        private String goal;
+    @ManyToOne
+    @JoinColumn(name = "coach_id")
+    private Coach coach;
 
-        //@NotNull(message = "Suspended status must be specified")
-        private boolean issuspended;  // Fixed typo in field name (was 'issusbended')
+    @OneToMany(mappedBy = "users")
+    private List<LoginRegister> loginRegister;
 
-        @Valid
-        @OneToOne
-        private progress progress;
+    @OneToMany(mappedBy = "users")
+    private List<Note> note;
 
-        @Valid
-        @OneToOne
-        private  workoutplan workout;
-
-        @Valid
-        @OneToOne
-        private nutritionplan nutrition;
-
-        @ManyToOne
-        @JoinColumn(name = "coach_id")
-        private Coach coach;
-        @OneToMany(mappedBy = "users")
-        private List< LoginRegister> loginRegister;
-        @OneToMany(mappedBy = "users")
-        private List <Note >note;
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // Return the authorities for the user
-        return null; // Replace with actual implementation
+        List<SimpleGrantedAuthority> authorities = new ArrayList<>();
+        if (userrole != null) {
+            authorities.add(new SimpleGrantedAuthority("ROLE_" + userrole.name().toUpperCase()));
+        }
+        return authorities;
     }
 
-    
     @Override
     public String getPassword() {
-        return this.password; // Replace with actual password field
+        return this.password;
     }
 
     @Override
     public String getUsername() {
-        return this.email; // Replace with actual username field
+        return this.email;
     }
 
     @Override
     public boolean isAccountNonExpired() {
-        return true; // Adjust logic as needed
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return true; // Adjust logic as needed
+        return !this.issuspended;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return true; // Adjust logic as needed
+        return true;
     }
 
     @Override
     public boolean isEnabled() {
-        return !this.isIssuspended(); // Adjust logic as needed
+        return !this.issuspended;
     }
 }
 
