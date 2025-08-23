@@ -9,6 +9,7 @@ import fitness_tracker.fitness.Repository.UserRepo;
 import fitness_tracker.fitness.Repository.CoachRepo;
 import fitness_tracker.fitness.secuirty.jwt.jwtservice;
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -49,6 +50,38 @@ public class AuthService {
         return authresponse.builder()
                 .token(token)
                 .role(ROLE.user.name())
+                .build();
+    }
+
+    public authresponse login(authrequest request) {
+        // Authenticate the user
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            request.getEmail(),
+                            request.getPassword()
+                    )
+            );
+        } catch (Exception e) {
+            throw new RuntimeException("Invalid email or password");
+        }
+
+        // Find the user
+        users user = userRepo.findByEmail(request.getEmail())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        // Check if user is suspended
+        if (user.isIssuspended()) {
+            throw new RuntimeException("Account is suspended");
+        }
+
+        // Generate token
+        String token = jwtService.generateToken(user);
+
+        return authresponse.builder()
+                .token(token)
+                .role(ROLE.user.name())
+                .message("Welcome!") // Add welcome message
                 .build();
     }
 }
