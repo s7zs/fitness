@@ -32,10 +32,10 @@ public class userservice implements UserDetailsService {
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         // Try to find user
         List<Coach> coaches = new ArrayList<>();
-        users user = userRepo.FindByEmail(email)
+        users user = userRepo.findByEmail(email)
                 .orElseGet(() -> {
                     // If not found as user, try to find as coach
-                    coaches.addAll(coachRepo.FindByEmail(email));
+                    coaches.addAll(coachRepo.findByEmail(email));
                     if (coaches.isEmpty()) {
                         throw new UsernameNotFoundException("User not found: " + email);
                     }
@@ -53,8 +53,8 @@ public class userservice implements UserDetailsService {
         }
 
         return new User(email,
-                user != null ? user.getPassword() : (coaches.isEmpty() ? null : coaches.get(0).getPassword()) ,
-                true, true, true, user != null && !user.isIssuspended(),
+                user != null ? user.getPassword() : (coaches.isEmpty() ? null : coaches.get(0).getPassword()),
+                true, true, true, user != null ? !user.isIssuspended() : !coaches.get(0).isIssuspended(),
                 authorities);
     }
 }

@@ -30,12 +30,17 @@ public class authcontroller {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<authresponse> register(@Valid @RequestBody register request) {
+    public ResponseEntity<authresponse> register(@Valid @RequestBody authrequest request) {
         return ResponseEntity.ok(authService.register(request));
     }
 
-    @PostMapping("/login")
+
+
+
+
+
+  /*  @PostMapping("/login")
     public ResponseEntity<authresponse> login(@Valid @RequestBody authrequest request) {
         return ResponseEntity.ok(authService.login(request));
-    }
+    }*/
 }
