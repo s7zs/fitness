@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class RegisterUserRespose {
 
-private String massege;
-private String username;
+ private String email ;
 
 }
