@@ -9,5 +9,5 @@ import java.util.List;
 @Repository
 public interface MealRepo extends JpaRepository<meal,Long> {
     @Query(nativeQuery = true , value = "SELECT * FROM USERS")
-List<meal>findbynutritionplanid (Long nutritionplanid);
+    List<meal>findbynutritionplanid (Long nutritionplanid);
 }

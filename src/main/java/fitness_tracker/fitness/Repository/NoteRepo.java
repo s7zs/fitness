@@ -9,7 +9,7 @@ import java.util.List;
 @Repository
 public interface NoteRepo extends JpaRepository<Note,Long> {
     @Query(nativeQuery = true , value = "SELECT * FROM USERS")
-List<Note>findbyuserid (Long userid);
+    List<Note>findbyuserid (Long userid);
     @Query(nativeQuery = true , value = "SELECT * FROM USERS")
-List<Note>findbycoachid(Long coachid);
+    List<Note>findbycoachid(Long coachid);
 }

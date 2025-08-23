@@ -9,5 +9,5 @@ import java.util.List;
 @Repository
 public interface NutritionplanRepo extends JpaRepository<nutritionplan,Long > {
     @Query(nativeQuery = true , value = "SELECT * FROM USERS")
-List<nutritionplan> findbuuserid (Long userid);
+    List<nutritionplan> findbuuserid (Long userid);
 }
