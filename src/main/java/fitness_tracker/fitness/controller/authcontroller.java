@@ -2,6 +2,7 @@ package fitness_tracker.fitness.controller;
 
 
 import fitness_tracker.fitness.dto.*;
+import fitness_tracker.fitness.secuirty.SecurityUtils;
 import fitness_tracker.fitness.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -18,10 +19,11 @@ import org.springframework.web.bind.annotation.*;
 public class authcontroller {
 
     private final AuthService authService;
-
+    private final SecurityUtils securityUtils;
     @Autowired
-    public authcontroller(@Lazy AuthService authService) {
+    public authcontroller(@Lazy AuthService authService, @Lazy SecurityUtils securityUtils) {
         this.authService = authService;
+        this.securityUtils = securityUtils;
     }
 
     @GetMapping()
@@ -38,5 +40,7 @@ public class authcontroller {
     public ResponseEntity<authresponse> login(@Valid @RequestBody authrequest request) {
         return ResponseEntity.ok(authService.login(request));
     }
+
+
 
 }

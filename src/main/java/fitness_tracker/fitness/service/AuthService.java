@@ -38,10 +38,10 @@ public class AuthService {
         user.setEmail(request.getEmail());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
 
-        // Set only required fields
-        user.setUserrole(ROLE.user); // default role
-        user.setIsmember(false);     // default: not a member yet
-        user.setIssuspended(false);  // default: active
+
+        user.setUserrole(ROLE.user);
+
+        user.setIssuspended(false);
         user.setStartdate(new Date());
 
         userRepo.save(user);
