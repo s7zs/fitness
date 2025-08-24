@@ -48,12 +48,11 @@ public class users implements UserDetails {
     private Float height;
     private String past_health_conditions;
 
-    @NotNull(message = "User role is required")
+
     @Enumerated(EnumType.STRING)
     private ROLE userrole;
 
-    @NotNull(message = "Membership status must be specified")
-    private boolean ismember;
+
 
     @PastOrPresent(message = "Start date must be in the past or present")
     private Date startdate;
@@ -63,22 +62,18 @@ public class users implements UserDetails {
 
     private String goal;
 
-    @NotNull(message = "Suspended status must be specified")
+    //@NotNull(message = "Suspended status must be specified")
     private boolean issuspended;
 
-    @Valid
+
     @OneToOne
     private progress progress;
 
-    @Valid
+
     @OneToOne
     private workoutplan workout;
-
-    @Valid
     @OneToOne
     private nutritionplan nutrition;
-
-    @ManyToOne
     @JoinColumn(name = "coach_id")
     private Coach coach;
 

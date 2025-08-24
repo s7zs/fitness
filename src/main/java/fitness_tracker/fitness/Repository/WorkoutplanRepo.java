@@ -11,6 +11,6 @@ import java.util.List;
 
 @Repository
 public interface WorkoutplanRepo extends JpaRepository<workoutplan,Long > {
-    @Query(nativeQuery = true , value = "SELECT * FROM USERS")
-    List<workoutplan>finfbyuserid(Long userid);
+    @Query(nativeQuery = true , value = "SELECT * FROM  workoutplan where user = :userid")
+workoutplan getuserworkoutplan(Long userid);
 }
