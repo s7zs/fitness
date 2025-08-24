@@ -15,9 +15,14 @@ public interface UserRepo extends JpaRepository<users,Long> {
     Optional<users>FindByEmail(String email);
     @Query(nativeQuery = true , value = "SELECT * FROM USERS")
     boolean existsByUsername( String username);
+
     @Query(nativeQuery = true , value = "SELECT * FROM USERS")
      boolean ExistByEmail(String email);
     @Query(nativeQuery = true , value = "SELECT * FROM USERS")
+
+
+    boolean ExistByEmail(String email);
+
     Optional<users>  ExistsByEmail(String email);
 
 

@@ -6,9 +6,13 @@ import fitness_tracker.fitness.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Primary;
+
+import org.springframework.context.annotation.Lazy;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,6 +20,10 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/auth")
 
 public class authcontroller {
+
+
+    @Autowired
+    @Lazy
 
     private final AuthService authService;
 
