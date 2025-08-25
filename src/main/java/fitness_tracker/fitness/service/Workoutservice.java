@@ -6,6 +6,8 @@ import fitness_tracker.fitness.secuirty.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 
 public class Workoutservice {
@@ -15,9 +17,9 @@ public class Workoutservice {
     @Autowired
     private SecurityUtils securityUtils;
 
-    public workoutplan getCurrentWorkoutPlan() throws  Exception{
+    public List<workoutplan> getCurrentWorkoutPlan() throws  Exception{
         Long userId = securityUtils.getCurrentUserId();
-        return workoutPlanRepository.getuserworkoutplan(userId);
+        return workoutPlanRepository.finfbyuserid(userId);
     }
 
 

@@ -36,6 +36,7 @@ public class websecuirtyconfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/api/user/**").hasRole("user")
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session

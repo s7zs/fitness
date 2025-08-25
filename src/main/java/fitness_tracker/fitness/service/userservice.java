@@ -57,4 +57,9 @@ public class userservice implements UserDetailsService {
                 true, true, true, user != null ? !user.isIssuspended() : !coaches.get(0).isIssuspended(),
                 authorities);
     }
+
+    public List<users> viewUsers() {
+        return userRepo.findAll();
+    }
+
 }

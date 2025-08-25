@@ -37,9 +37,10 @@ public class AuthService {
         users user = new users();
         user.setEmail(request.getEmail());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setUserrole(request.getRole());
 
 
-        user.setUserrole(ROLE.user);
+        //user.setUserrole(ROLE.user);
 
         user.setIssuspended(false);
         user.setStartdate(new Date());
@@ -49,7 +50,7 @@ public class AuthService {
         String token = jwtService.generateToken(user);
         return authresponse.builder()
                 .token(token)
-                .role(ROLE.user.name())
+                .role(user.getUserrole().name())
                 .build();
     }
 
@@ -80,7 +81,7 @@ public class AuthService {
 
         return authresponse.builder()
                 .token(token)
-                .role(ROLE.user.name())
+                .role(user.getUserrole().name())
                 .message("Welcome!") // Add welcome message
                 .build();
     }
