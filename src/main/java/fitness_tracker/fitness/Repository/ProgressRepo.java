@@ -10,6 +10,5 @@ import java.util.List;
 @Repository
 public interface ProgressRepo extends JpaRepository<progress,Long > {
     @Query(nativeQuery = true , value = "SELECT * FROM USERS")
-    List<progress>findbyuserid (Long userid);
-
+    List<progress> findByUser_Userid(Long userId);
 }

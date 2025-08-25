@@ -75,6 +75,7 @@ public class users implements UserDetails {
     @OneToOne
     private nutritionplan nutrition;
     @JoinColumn(name = "coach_id")
+    @ManyToOne
     private Coach coach;
 
     @OneToMany(mappedBy = "users")

@@ -10,4 +10,5 @@ import java.util.List;
 public interface NutritionplanRepo extends JpaRepository<nutritionplan,Long > {
     @Query(nativeQuery = true , value = "SELECT * FROM USERS")
     List<nutritionplan> findbuuserid (Long userid);
+    List<nutritionplan> findByUser_Userid(Long userId);
 }
