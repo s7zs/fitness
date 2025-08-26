@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Calendar;
 import java.util.Date;
 
 @Entity
@@ -40,5 +41,14 @@ public class progress {
     @JoinColumn(name = "userid")
     private users user;
 
+
+    @PrePersist
+    protected void onCreate() {
+        this.startdate = new Date(); // today
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(this.startdate);
+        calendar.add(Calendar.DAY_OF_MONTH, 30);
+        this.enddate = calendar.getTime();
+    }
 
 }
