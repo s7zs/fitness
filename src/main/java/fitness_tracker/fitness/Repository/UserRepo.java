@@ -20,4 +20,6 @@ public interface UserRepo extends JpaRepository<users, Long> {
             value = "INSERT INTO users (email, password) VALUES (:email, :password)"
     )
     void registerNewUser(@Param("email") String email, @Param("password") String password);
+
+
 }

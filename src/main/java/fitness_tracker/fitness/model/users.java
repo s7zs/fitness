@@ -23,6 +23,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
+@EntityListeners(StringCleaningListener.class)
 public class users implements UserDetails {
 
 

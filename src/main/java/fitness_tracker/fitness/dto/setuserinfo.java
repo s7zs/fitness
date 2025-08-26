@@ -1,15 +1,15 @@
 package fitness_tracker.fitness.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
 public class setuserinfo {
     String phonnumber;
-    char gender;
+    String gender;
     int age;
     float weight;
     float height;

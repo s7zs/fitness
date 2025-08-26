@@ -2,6 +2,7 @@ package fitness_tracker.fitness.service;
 
 import fitness_tracker.fitness.Repository.CoachRepo;
 import fitness_tracker.fitness.Repository.UserRepo;
+import fitness_tracker.fitness.dto.setuserinfo;
 import fitness_tracker.fitness.model.users;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -49,6 +50,25 @@ public class userservice implements UserDetailsService {
         return userRepo.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found with email: " + email));
     }
+
+    public users updateUserProfile( setuserinfo dto) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String emaill = authentication.getName();
+        users user = userRepo.findByEmail(emaill)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+        user.setPhonenumber(dto.getPhonnumber());
+        user.setGender(dto.getGender());
+        user.setAge(dto.getAge());
+        user.setWeight(dto.getWeight());
+        user.setHeight(dto.getHeight());
+        user.setPast_health_conditions(dto.getPast_conditions());
+        user.setGoal(dto.getGoal());
+
+        return userRepo.save(user);
+    }
+
+
     public List<users> viewUsers() {
         return userRepo.findAll();
     }
