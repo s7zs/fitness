@@ -17,10 +17,10 @@ public class Workoutservice {
     @Autowired
     private SecurityUtils securityUtils;
 
-    public List<workoutplan> getCurrentWorkoutPlan() throws  Exception{
-        Long userId = securityUtils.getCurrentUserId();
-        return workoutPlanRepository.finfbyuserid(userId);
-    }
+    //public List<workoutplan> getCurrentWorkoutPlan() throws  Exception{
+       // Long userId = securityUtils.getCurrentUserId();
+//return workoutPlanRepository.finfbyuserid(userId);
+   // }
 
 
 

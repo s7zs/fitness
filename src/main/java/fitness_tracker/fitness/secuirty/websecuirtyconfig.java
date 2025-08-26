@@ -27,8 +27,9 @@ public class websecuirtyconfig {
     private final UserDetailsService userDetailsService;
     private final jwtservice jwtService;
 
+
    @Autowired
-    public websecuirtyconfig(UserDetailsService userDetailsService, jwtservice jwtService) {
+    public websecuirtyconfig(@Lazy UserDetailsService userDetailsService,@Lazy jwtservice jwtService) {
         this.userDetailsService = userDetailsService;
         this.jwtService = jwtService;
     }
@@ -47,7 +48,7 @@ public class websecuirtyconfig {
                 // Configure endpoint authorization
                 .authorizeHttpRequests(auth -> auth
                         // Public endpoints
-                        .requestMatchers("/auth/welcome", "/auth/register", "/auth/generateToken", "/auth/login").permitAll()
+                        .requestMatchers("/auth/welcome", "/auth/register", "/auth/generateToken", "/auth/login", "/auth/registercoach", "/auth/logincoach").permitAll()
 
                         // Role-based endpoints
                         .requestMatchers("/auth/user/**").hasAuthority("ROLE_USER")

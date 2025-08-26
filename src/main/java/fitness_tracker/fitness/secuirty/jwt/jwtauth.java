@@ -34,7 +34,7 @@ public class jwtauth extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
         String path = request.getRequestURI();
-        return path.equals("/auth/login") || path.equals("/auth/register") || path.equals("/auth/generateToken") || path.equals("/auth/welcome");
+        return path.equals("/auth/login") || path.equals("/auth/register") || path.equals("/auth/generateToken") || path.equals("/auth/welcome") || path.equals("/auth/registercoach") || path.equals("/auth/logincoach");
     }
 
     @Override

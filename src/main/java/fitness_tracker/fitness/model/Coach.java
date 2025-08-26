@@ -10,8 +10,10 @@ import lombok.*;
 import org.hibernate.annotations.Type;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Collection;
 @Entity
@@ -30,18 +32,16 @@ public class Coach implements UserDetails {
 
     @NotBlank(message = "Password is required")
     @Size(min = 8, message = "Password must be at least 8 characters long")
-    @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!?*()\\-_\\[\\]{}|;:,.<>]).{8,}$",
-            message = "Password must contain at least one digit, one lowercase, one uppercase letter and one special character")
     private String password;
 
-    @NotBlank(message = "Phone number is required")
+    //@NotBlank(message = "Phone number is required")
     @Pattern(regexp = "^[+]?[(]?[0-9]{3}[)]?[-\\s.]?[0-9]{3}[-\\s.]?[0-9]{4,6}$", message = "Invalid phone number format")
     private  String phonenumber;
 
-    @Size(max = 1)
-    @Pattern(regexp = "^[MF]$", message = "Gender must be 'M' or 'F'")
+
+
     private String gender;
-    @Min(value = 20)
+
     private int age;
 
 
@@ -61,11 +61,7 @@ public class Coach implements UserDetails {
     @OneToMany(mappedBy = "coach")
     private List<Note> note;
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        // Return the authorities for the user
-        return null; // Replace with actual implementation
-    }
+
 
     @Override
     public String getPassword() {
@@ -100,5 +96,14 @@ public class Coach implements UserDetails {
     // Add missing getter for the issuspended field
     public boolean isIssuspended() {
         return this.issusbended;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        List<SimpleGrantedAuthority> authorities = new ArrayList<>();
+        if (userrole != null) {
+            authorities.add(new SimpleGrantedAuthority("ROLE_" + userrole.name().toUpperCase()));
+        }
+        return authorities;
     }
 }

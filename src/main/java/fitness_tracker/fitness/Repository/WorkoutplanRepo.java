@@ -1,5 +1,6 @@
 package fitness_tracker.fitness.Repository;
 
+import fitness_tracker.fitness.model.users;
 import fitness_tracker.fitness.model.workoutplan;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Example;
@@ -11,6 +12,6 @@ import java.util.List;
 
 @Repository
 public interface WorkoutplanRepo extends JpaRepository<workoutplan,Long > {
-    @Query(nativeQuery = true , value = "SELECT * FROM  workoutplan where user = :userid")
-List<workoutplan>finfbyuserid(Long userid);
+
+    List<workoutplan> findByUser(users user);;
 }
