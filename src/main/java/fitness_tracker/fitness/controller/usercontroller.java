@@ -1,3 +1,4 @@
+
 package fitness_tracker.fitness.controller;
 
 
@@ -27,8 +28,7 @@ public class usercontroller {
     }
 
     @GetMapping("/AllUsers")
-    public List<users> view()
-    {
+    public List<users> view() {
         return userservice.viewUsers();
     }
 
@@ -36,5 +36,4 @@ public class usercontroller {
     public ResponseEntity<users> getProfile() {
         return ResponseEntity.ok(userservice.getCurrentUserProfile());
     }
-
 }
