@@ -2,6 +2,7 @@ package fitness_tracker.fitness.secuirty;
 
 import fitness_tracker.fitness.secuirty.jwt.jwtservice;
 import jakarta.servlet.Filter;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationProvider;
 import fitness_tracker.fitness.secuirty.jwt.jwtauth;
@@ -29,7 +30,7 @@ public class websecuirtyconfig {
 
 
    @Autowired
-    public websecuirtyconfig(@Lazy UserDetailsService userDetailsService,@Lazy jwtservice jwtService) {
+    public websecuirtyconfig(@Qualifier("unifiedauthservice") UserDetailsService userDetailsService, @Lazy jwtservice jwtService) {
         this.userDetailsService = userDetailsService;
         this.jwtService = jwtService;
     }

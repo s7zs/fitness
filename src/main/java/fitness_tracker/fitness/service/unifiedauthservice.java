@@ -10,7 +10,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-@Service
+@Service("unifiedauthservice")
 public class unifiedauthservice implements UserDetailsService {
     private final UserRepo userRepo;
     private final CoachRepo coachRepo;

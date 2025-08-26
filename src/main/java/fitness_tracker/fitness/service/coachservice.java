@@ -54,7 +54,7 @@ public class coachservice implements UserDetailsService{
     public String registerCoach(Coach coach ) {
         coach.setPassword(passwordEncoder.encode(coach.getPassword()));
         coachRepo.save(coach);
-        return "User added successfully!";
+        return "coach added successfully!";
     }
 
 
@@ -73,7 +73,7 @@ public class coachservice implements UserDetailsService{
 
 
         Coach coach = coachRepo.findByEmail(request.getEmail())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new RuntimeException("coach not found"));
 
 
         if (coach.isIssuspended()) {

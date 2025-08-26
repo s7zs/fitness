@@ -55,7 +55,7 @@ public class authcontroller {
 
     @PostMapping("/logincoach")
     public ResponseEntity<authresponse> logincoach(@Valid @RequestBody authrequest request) {
-        return ResponseEntity.ok(authService.login(request));
+        return ResponseEntity.ok(coachservice.login(request));
     }
 
 
