@@ -2,20 +2,19 @@ package fitness_tracker.fitness.service;
 
 import fitness_tracker.fitness.Repository.CoachRepo;
 import fitness_tracker.fitness.Repository.UserRepo;
-import fitness_tracker.fitness.model.Coach;
 import fitness_tracker.fitness.model.users;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class userservice implements UserDetailsService {
@@ -30,34 +29,26 @@ public class userservice implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        // Try to find user
-        List<Coach> coaches = new ArrayList<>();
-        users user = userRepo.findByEmail(email)
-                .orElseGet(() -> {
-                    // If not found as user, try to find as coach
-                    coaches.addAll(coachRepo.findByEmail(email));
-                    if (coaches.isEmpty()) {
-                        throw new UsernameNotFoundException("User not found: " + email);
-                    }
-                    return null;
-                });
+        Optional<users> userInfo = userRepo.findByEmail(email );
 
-        List<SimpleGrantedAuthority> authorities = new ArrayList<>();
-
-        if (user != null) {
-            // Add user role
-            authorities.add(new SimpleGrantedAuthority("ROLE_" + user.getUserrole().name().toUpperCase()));
-        } else {
-            // Add coach role
-            authorities.add(new SimpleGrantedAuthority("ROLE_COACH"));
+        if (userInfo.isEmpty()) {
+            throw new UsernameNotFoundException("User not found with email: " + email);
         }
 
-        return new User(email,
-                user != null ? user.getPassword() : (coaches.isEmpty() ? null : coaches.get(0).getPassword()),
-                true, true, true, user != null ? !user.isIssuspended() : !coaches.get(0).isIssuspended(),
-                authorities);
+        users user = userInfo.get();
+        return User.builder()
+                .username(user.getEmail())
+                .password(user.getPassword())
+                .authorities("ROLE_" + user.getUserrole().name().toUpperCase()) // assuming roles is already a collection or string[]
+                .build();
     }
+    public users getCurrentUserProfile() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
 
+        return userRepo.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found with email: " + email));
+    }
     public List<users> viewUsers() {
         return userRepo.findAll();
     }
