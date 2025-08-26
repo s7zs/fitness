@@ -25,6 +25,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 @NoArgsConstructor
 public class users implements UserDetails {
 
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "progress_seq")
     @SequenceGenerator(name = "progress_seq", sequenceName = "progress_sequence", allocationSize = 600)
@@ -50,7 +51,7 @@ public class users implements UserDetails {
 
 
     @Enumerated(EnumType.STRING)
-    private ROLE userrole;
+    private ROLE userrole=ROLE.user;
 
 
 
@@ -75,6 +76,7 @@ public class users implements UserDetails {
     @OneToOne
     private nutritionplan nutrition;
     @JoinColumn(name = "coach_id")
+    @ManyToOne
     private Coach coach;
 
     @OneToMany(mappedBy = "users")
@@ -91,6 +93,8 @@ public class users implements UserDetails {
         }
         return authorities;
     }
+
+
 
     @Override
     public String getPassword() {

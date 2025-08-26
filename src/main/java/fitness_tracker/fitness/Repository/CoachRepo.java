@@ -8,4 +8,5 @@ import java.util.Optional;
 
 public interface CoachRepo extends JpaRepository<Coach, Long> {
     List<Coach> findByEmail(String email);
+
 }

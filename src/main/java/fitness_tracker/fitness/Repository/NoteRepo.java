@@ -12,4 +12,6 @@ public interface NoteRepo extends JpaRepository<Note,Long> {
     List<Note>findbyuserid (Long userid);
     @Query(nativeQuery = true , value = "SELECT * FROM USERS")
     List<Note>findbycoachid(Long coachid);
+    List<Note> findByUsers_Userid(Long userId);
+    List<Note> findByCoach_Coachid(Long coachId);
 }

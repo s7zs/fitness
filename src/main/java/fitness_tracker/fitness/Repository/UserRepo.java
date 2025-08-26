@@ -7,17 +7,21 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
 public interface UserRepo extends JpaRepository<users, Long> {
-    Optional<users> findByEmail(String email);
+    public Optional<users> findByEmail(String email);
     boolean existsByEmail(String email);
-
+    List<users> findByCoach_Coachid(Long coachId);;
 
     @Query(
             nativeQuery = true,
             value = "INSERT INTO users (email, password) VALUES (:email, :password)"
     )
     void registerNewUser(@Param("email") String email, @Param("password") String password);
+
+
+
 }

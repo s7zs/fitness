@@ -1,5 +1,6 @@
 package fitness_tracker.fitness.dto;
 
+import fitness_tracker.fitness.model.ROLE;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -34,7 +35,7 @@ public class authresponse {
         return role;
     }
 
-    public void setRole(String role) {
+    public void setRole() {
         this.role = role;
     }
 }

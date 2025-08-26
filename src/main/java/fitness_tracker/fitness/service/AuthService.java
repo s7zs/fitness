@@ -1,18 +1,15 @@
 package fitness_tracker.fitness.service;
 
 import fitness_tracker.fitness.dto.*;
-import fitness_tracker.fitness.model.Coach;
-import fitness_tracker.fitness.model.LoginRegister;
-import fitness_tracker.fitness.model.ROLE;
 import fitness_tracker.fitness.model.users;
 import fitness_tracker.fitness.Repository.UserRepo;
 import fitness_tracker.fitness.Repository.CoachRepo;
 import fitness_tracker.fitness.secuirty.jwt.jwtservice;
 import jakarta.transaction.Transactional;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -37,19 +34,20 @@ public class AuthService {
         users user = new users();
         user.setEmail(request.getEmail());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setUserrole(request.getRole());
 
 
-        user.setUserrole(ROLE.user);
+        //user.setUserrole(ROLE.user);
 
         user.setIssuspended(false);
         user.setStartdate(new Date());
 
         userRepo.save(user);
 
-        String token = jwtService.generateToken(user);
+
         return authresponse.builder()
-                .token(token)
-                .role(ROLE.user.name())
+                .token(null)
+                .role(String.valueOf(user.getUserrole()))
                 .build();
     }
 
@@ -74,13 +72,13 @@ public class AuthService {
         if (user.isIssuspended()) {
             throw new RuntimeException("Account is suspended");
         }
-
         // Generate token
         String token = jwtService.generateToken(user);
 
         return authresponse.builder()
                 .token(token)
-                .role(ROLE.user.name())
+
+                .role(user.getUserrole().name())
                 .message("Welcome!") // Add welcome message
                 .build();
     }
