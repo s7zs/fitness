@@ -1,16 +1,16 @@
 package fitness_tracker.fitness.service;
 
 import fitness_tracker.fitness.Repository.CoachRepo;
-import fitness_tracker.fitness.Repository.UserRepo;
 import fitness_tracker.fitness.dto.authrequest;
 import fitness_tracker.fitness.dto.authresponse;
 import fitness_tracker.fitness.model.Coach;
-import fitness_tracker.fitness.model.users;
 import fitness_tracker.fitness.secuirty.jwt.jwtservice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -88,5 +88,12 @@ public class coachservice implements UserDetailsService{
                 .role(coach.getUserrole().name())
                 .message("Welcome!") // Add welcome message
                 .build();
+    }
+    public Coach getCurrentUserProfile() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+
+        return coachRepo.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found with email: " + email));
     }
 }

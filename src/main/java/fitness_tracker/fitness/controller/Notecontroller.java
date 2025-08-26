@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/auth/user/notes")
 public class Notecontroller {
     private  Noteservice noteService;
 
@@ -20,14 +19,15 @@ public class Notecontroller {
         this.noteService = noteService;
     }
 
-    @PostMapping
+    @PostMapping("/auth/user/notes")
     public ResponseEntity<Note> addNote(@RequestBody @Valid Note noteRequest) {
         Note note = noteService.addNote(noteRequest.getContent(), noteRequest.getDate());
         return ResponseEntity.ok(note);
     }
 
-    @GetMapping
+    @PostMapping("/auth/user/notes")
     public ResponseEntity<List<Note>> getMyNotes() {
         return ResponseEntity.ok(noteService.getMyNotes());
     }
+
 }

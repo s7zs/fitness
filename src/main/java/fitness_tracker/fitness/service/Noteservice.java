@@ -15,6 +15,7 @@ public class Noteservice {
     private final  NoteRepo noteRepo;
     private  final userservice userService;
 
+
     @Autowired
     public Noteservice(@Lazy NoteRepo noteRepo,@Lazy userservice userService) {
         this.noteRepo = noteRepo;
