@@ -21,9 +21,9 @@ public class Workoutservice {
     @Autowired
     private UserRepo userRepo;
 
-    public workoutplan getCurrentWorkoutPlan() throws  Exception{
+    public List<workoutplan> getCurrentWorkoutPlan() throws  Exception{
         Long userId = securityUtils.getCurrentUserId();
-        return workoutPlanRepository.getuserworkoutplan(userId);
+        return workoutPlanRepository.finfbyuserid(userId);
     }
 
     public workoutplan createworkoutplan(Long userid ,workoutplan plan){
