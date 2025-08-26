@@ -15,5 +15,5 @@ public interface ProgressRepo extends JpaRepository<progress,Long > {
     List<progress> findByUser (users user);
 
 
-
+    List<progress> findBycoach (Coach coach);
 }

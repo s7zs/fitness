@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/auth/user/progress")
+
 public class progresscontroller {
 
     private progressService progressService;
@@ -21,9 +21,9 @@ public class progresscontroller {
         this.progressService = progressService;
     }
 
-    @PostMapping
+    @PostMapping("/auth/user/progress")
     public ResponseEntity<progress> addProgress(@RequestBody @Valid progress progressRequest) {
-        progress prog = progressService.addProgress(
+        progress prog = progressService.addProgressU(
                 progressRequest.getWeightgoal(),
                 progressRequest.getFatpercent(),
                 progressRequest.getStartdate(),
@@ -32,9 +32,26 @@ public class progresscontroller {
         return ResponseEntity.ok(prog);
     }
 
-    @GetMapping
+    @GetMapping("/auth/user/progress")
     public ResponseEntity<List<progress>> getMyProgress() {
-        return ResponseEntity.ok(progressService.getMyProgress());
+        return ResponseEntity.ok(progressService.getMyProgressU());
     }
+
+    @PostMapping("/auth/coach/progress")
+    public ResponseEntity<progress> addcoachprogress(@RequestBody @Valid progress progressRequest) {
+        progress prog = progressService.addProgressC(
+                progressRequest.getWeightgoal(),
+                progressRequest.getFatpercent(),
+                progressRequest.getStartdate(),
+                progressRequest.getEnddate()
+        );
+        return ResponseEntity.ok(prog);
+    }
+
+    @GetMapping("/auth/coach/progress")
+    public ResponseEntity<List<progress>> getcoachProgress() {
+        return ResponseEntity.ok(progressService.getMyProgressC());
+    }
+
 
 }

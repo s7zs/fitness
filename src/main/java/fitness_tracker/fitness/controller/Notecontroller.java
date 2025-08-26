@@ -20,14 +20,27 @@ public class Notecontroller {
     }
 
     @PostMapping("/auth/user/notes")
-    public ResponseEntity<Note> addNote(@RequestBody @Valid Note noteRequest) {
-        Note note = noteService.addNote(noteRequest.getContent(), noteRequest.getDate());
+    public ResponseEntity<Note> addNoteu(@RequestBody @Valid Note noteRequest) {
+        Note note = noteService.addNoteuser(noteRequest.getContent(), noteRequest.getDate());
         return ResponseEntity.ok(note);
     }
 
-    @PostMapping("/auth/user/notes")
-    public ResponseEntity<List<Note>> getMyNotes() {
-        return ResponseEntity.ok(noteService.getMyNotes());
+    @GetMapping("/auth/user/notes")
+    public ResponseEntity<List<Note>> getMyNotesu() {
+        return ResponseEntity.ok(noteService.getMyNotesuser());
     }
+
+    @PostMapping("/auth/coach/notes")
+    public ResponseEntity<Note> addNotec(@RequestBody @Valid Note noteRequest) {
+        Note note = noteService.addNotecoach(noteRequest.getContent(), noteRequest.getDate());
+        return ResponseEntity.ok(note);
+    }
+
+    @GetMapping("/auth/coach/notes")
+    public ResponseEntity<List<Note>> getMyNotesc() {
+        return ResponseEntity.ok(noteService.getMyNotecoach());
+    }
+
+
 
 }

@@ -1,5 +1,6 @@
 package fitness_tracker.fitness.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.Valid;
@@ -83,8 +84,8 @@ public class users implements UserDetails {
     @OneToMany(mappedBy = "users")
     private List<LoginRegister> loginRegister;
 
-    @OneToMany(mappedBy = "users")
-    @JsonManagedReference
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<Note> note= new ArrayList<>();
 
     @Override

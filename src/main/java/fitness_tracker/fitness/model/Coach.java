@@ -1,5 +1,7 @@
 package fitness_tracker.fitness.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Min;
@@ -59,9 +61,11 @@ public class Coach implements UserDetails {
     private List<LoginRegister> loginRegister;
 
     @OneToMany(mappedBy = "coach")
+    @JsonIgnore
     private List<Note> note;
 
-
+   @OneToOne
+   private progress progress;
 
     @Override
     public String getPassword() {

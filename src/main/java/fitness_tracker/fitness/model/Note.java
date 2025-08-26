@@ -36,10 +36,11 @@ private String content;
 
 @ManyToOne
 @JoinColumn(name = " user_id")
-@JsonBackReference
-private users users;
+@JsonBackReference("user-notes")
+private users user;
 @ManyToOne
 @JoinColumn(name = " coach_id")
+@JsonBackReference("coach-notes")
 private Coach coach;
     @PrePersist
     protected void onCreate() {
