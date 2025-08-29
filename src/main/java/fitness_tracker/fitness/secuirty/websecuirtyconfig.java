@@ -49,7 +49,7 @@ public class websecuirtyconfig {
                 // Configure endpoint authorization
                 .authorizeHttpRequests(auth -> auth
                         // Public endpoints
-                        .requestMatchers("/auth/welcome", "/auth/register", "/auth/generateToken", "/auth/login", "/auth/registercoach", "/auth/logincoach").permitAll()
+                        .requestMatchers("/auth/welcome", "/auth/register", "/auth/generateToken", "/auth/login", "/auth/registercoach", "/auth/logincoach","/auth/user/AllUsers","/auth/user/Allcoach").permitAll()
 
                         // Role-based endpoints
                         .requestMatchers("/auth/user/**").hasAuthority("ROLE_USER")

@@ -1,5 +1,6 @@
 package fitness_tracker.fitness.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.PastOrPresent;
@@ -26,10 +27,12 @@ public class nutritionplan {
 
     @PastOrPresent
     @NotBlank(message = "date is required")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Date startdate;
 
     @PastOrPresent
     @NotBlank(message = "date is required")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Date enddate;
 
     @OneToOne

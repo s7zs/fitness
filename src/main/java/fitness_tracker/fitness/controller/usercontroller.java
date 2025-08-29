@@ -3,7 +3,11 @@ package fitness_tracker.fitness.controller;
 
 import fitness_tracker.fitness.dto.setuserinfo;
 import fitness_tracker.fitness.model.Coach;
+import fitness_tracker.fitness.model.nutritionplan;
 import fitness_tracker.fitness.model.users;
+import fitness_tracker.fitness.model.workoutplan;
+import fitness_tracker.fitness.service.NutritionService;
+import fitness_tracker.fitness.service.Workoutservice;
 import fitness_tracker.fitness.service.userservice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -24,6 +28,12 @@ public class usercontroller {
 
     @Autowired
     private userservice userservice;
+
+    @Autowired
+    private Workoutservice workoutservice;
+
+    @Autowired
+    private NutritionService nutritionService;
 
     private final AuthenticationManager authenticationManager;
 
@@ -92,7 +102,88 @@ public class usercontroller {
     }
 
 
+    @PostMapping("/createplan/{userId}")
+    public ResponseEntity<?> createPlan(@PathVariable Long userId, @RequestBody nutritionplan plan) {
+        try {
+            nutritionplan saved = nutritionService.createNutritionPlanForUser(userId, plan);
+            return ResponseEntity.ok(saved);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 
+    // ✅ Update plan for a specific user
+    @PutMapping("/{userId}")
+    public ResponseEntity<?> updatePlan(@PathVariable Long userId, @RequestBody nutritionplan plan) {
+        try {
+            nutritionplan updated = nutritionService.updateNutritionPlanForUser(userId, plan);
+            return ResponseEntity.ok(updated);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+    @GetMapping("/nutrition")
+    public ResponseEntity<?> getMyNutritionPlan() {
+        try {
+            // Check if user has nutrition plan
+            if (!nutritionService.hasNutritionPlan()) {
+                return ResponseEntity.badRequest().body("No nutrition plan assigned yet. Please contact your coach.");
+            }
+
+            nutritionplan plan = nutritionService.getCurrentUserNutritionPlan();
+            return ResponseEntity.ok(plan);
+
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error retrieving nutrition plan: " + e.getMessage());
+        }
+    }
+
+    @GetMapping("/nutrition/meals")
+    public ResponseEntity<?> getMyMeals() {
+        try {
+            if (!nutritionService.hasNutritionPlan()) {
+                return ResponseEntity.badRequest().body("No nutrition plan assigned yet. Please contact your coach.");
+            }
+
+            nutritionplan plan = nutritionService.getCurrentUserNutritionPlan();
+            return ResponseEntity.ok(plan.getMeals());
+
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error retrieving meals: " + e.getMessage());
+        }
+    }
+
+    @GetMapping("/workout")
+    public ResponseEntity<?> getMyWorkoutPlan() {
+        try {
+            // Check if user has workout plan
+            if (!workoutservice.hasWorkoutPlan()) {
+                return ResponseEntity.badRequest().body("No workout plan assigned yet. Please contact your coach.");
+            }
+
+            workoutplan plan = workoutservice.getCurrentUserWorkoutPlan();
+            return ResponseEntity.ok(plan);
+
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error retrieving workout plan: " + e.getMessage());
+        }
+
+    }
+
+    @GetMapping("/workout/exercises")
+    public ResponseEntity<?> getMyExercises() {
+        try {
+            if (!workoutservice.hasWorkoutPlan()) {
+                return ResponseEntity.badRequest().body("No workout plan assigned yet. Please contact your coach.");
+            }
+
+            workoutplan plan = workoutservice.getCurrentUserWorkoutPlan();
+            return ResponseEntity.ok(plan.getExercises());
+
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error retrieving exercises: " + e.getMessage());
+        }
+    }
 
 
 
