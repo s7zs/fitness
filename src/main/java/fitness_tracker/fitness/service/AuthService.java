@@ -25,32 +25,11 @@ public class AuthService {
     private final jwtservice jwtService;
     private final PasswordEncoder passwordEncoder;
 
-    @Transactional
-    public authresponse register(authrequest request) {
-        if (userRepo.existsByEmail(request.getEmail())) {
-            throw new RuntimeException("Email already exists");
-        }
-
-        users user = new users();
-        user.setEmail(request.getEmail());
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
-        user.setUserrole(request.getRole());
-
-
-        //user.setUserrole(ROLE.user);
-
-        user.setIssuspended(false);
-        user.setStartdate(new Date());
-
-        userRepo.save(user);
-
-
-        return authresponse.builder()
-                .token(null)
-                .role(String.valueOf(user.getUserrole()))
-                .build();
+    public String addUser(users userInfo) {
+        userInfo.setPassword(passwordEncoder.encode(userInfo.getPassword()));
+        userRepo.save(userInfo);
+        return "User added successfully!";
     }
-
     public authresponse login(authrequest request) {
         // Authenticate the user
         try {

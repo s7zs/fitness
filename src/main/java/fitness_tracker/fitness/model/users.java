@@ -10,10 +10,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Collection;
-import java.util.ArrayList;
+import java.util.*;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -34,9 +31,12 @@ public class users implements UserDetails {
     @SequenceGenerator(name = "progress_seq", sequenceName = "progress_sequence", allocationSize = 600)
     private long userid;
 
+    private String name;
+
     @Column(unique = true)
     @Email(message = "email should be valid")
     private String email;
+
 
     @NotBlank(message = "Password is required")
     @Size(min = 8, message = "Password must be at least 8 characters long")
@@ -54,6 +54,7 @@ public class users implements UserDetails {
 
 
     @Enumerated(EnumType.STRING)
+    @JsonIgnore
     private ROLE userrole=ROLE.user;
 
 
@@ -61,8 +62,7 @@ public class users implements UserDetails {
     @PastOrPresent(message = "Start date must be in the past or present")
     private Date startdate;
 
-    @FutureOrPresent(message = "End date must be in the future or present")
-    private Date enddate;
+
 
     private String goal;
 
@@ -71,15 +71,24 @@ public class users implements UserDetails {
 
 
     @OneToOne
+    @JsonIgnore
     private progress progress;
 
 
     @OneToOne
+    @JsonIgnore
     private workoutplan workout;
     @OneToOne
+    @JsonIgnore
     private nutritionplan nutrition;
-    @JoinColumn(name = "coach_id")
-    private Coach coach;
+    @ManyToMany
+    @JoinTable(
+            name = "user_follow_coach",
+            joinColumns = @JoinColumn(name = "userid"),
+            inverseJoinColumns = @JoinColumn(name = "coachid")
+    )
+    @JsonIgnore
+    private Set<Coach> followedCoaches = new HashSet<>();
 
     @OneToMany(mappedBy = "users")
     private List<LoginRegister> loginRegister;
@@ -123,7 +132,9 @@ public class users implements UserDetails {
     public boolean isCredentialsNonExpired() {
         return true;
     }
-
+    public String getDisplayUsername() {
+        return this.name;
+    }
     @Override
     public boolean isEnabled() {
         return !this.issuspended;

@@ -3,6 +3,7 @@ package fitness_tracker.fitness.service;
 import fitness_tracker.fitness.Repository.CoachRepo;
 import fitness_tracker.fitness.Repository.UserRepo;
 import fitness_tracker.fitness.dto.setuserinfo;
+import fitness_tracker.fitness.model.Coach;
 import fitness_tracker.fitness.model.users;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -14,6 +15,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -71,6 +73,63 @@ public class userservice implements UserDetailsService {
 
     public List<users> viewUsers() {
         return userRepo.findAll();
+    }
+    public List<Coach> getAllCoaches() {
+        return coachRepo.findAll();
+    }
+
+    public Optional<Coach> searchCoachesByUsername(String username) {
+        return coachRepo.findByName(username);
+    }
+
+    public String followCoach(String name) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+
+        users user = userRepo.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found with email: " + email));
+
+        Coach coach = coachRepo.findByName(name)
+                .orElseThrow(() -> new RuntimeException("Coach not found with ID: " + name));
+
+
+        user.getFollowedCoaches().add(coach);
+        userRepo.save(user);
+
+
+        coach.getFollowers().add(user);
+        coachRepo.save(coach);
+        return "coach followed";
+    }
+
+    public String unfollowCoach(String name ) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+
+        users user = userRepo.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found with email: " + email));
+
+        Coach coach = coachRepo.findByName(name)
+                .orElseThrow(() -> new RuntimeException("Coach not found with ID: " + name));
+
+
+        user.getFollowedCoaches().remove(coach);
+        userRepo.save(user);
+
+
+        coach.getFollowers().remove(user);
+        coachRepo.save(coach);
+        return "coach unfollowed";
+    }
+
+    public List<Coach> getFollowedCoaches() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+
+        users user = userRepo.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found with email: " + email));
+
+        return new ArrayList<>(user.getFollowedCoaches());
     }
 
 }

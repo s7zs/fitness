@@ -15,9 +15,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Collection;
+import java.util.*;
+
 @Entity
 @Setter
 @Getter
@@ -27,6 +26,8 @@ public class Coach implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long coachid;
+
+    private String name;
 
     @NotBlank(message = "Username is required")
     @Email
@@ -55,8 +56,11 @@ public class Coach implements UserDetails {
 
     private boolean issusbended;
 
-    @OneToMany(mappedBy = "coach")
-    private List<users> users;
+    @ManyToMany(mappedBy = "followedCoaches")
+    @JsonIgnore
+    private Set<users> followers = new HashSet<>();
+
+
     @OneToMany(mappedBy = "coach")
     private List<LoginRegister> loginRegister;
 
@@ -101,7 +105,9 @@ public class Coach implements UserDetails {
     public boolean isIssuspended() {
         return this.issusbended;
     }
-
+    public String getDisplayUsername() {
+        return this.name;
+    }
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<SimpleGrantedAuthority> authorities = new ArrayList<>();
