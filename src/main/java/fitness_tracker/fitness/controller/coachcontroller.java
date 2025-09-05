@@ -24,7 +24,6 @@ public class coachcontroller {
         this.coachservice = coachservice;
     }
 
-    @Autowired
     @GetMapping("/followers")
     public ResponseEntity<List<users>> getFollowers() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
