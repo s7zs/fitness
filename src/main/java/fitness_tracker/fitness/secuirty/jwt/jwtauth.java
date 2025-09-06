@@ -17,24 +17,25 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
-@Component
-
+//@Component
+@RequiredArgsConstructor
 public class jwtauth extends OncePerRequestFilter {
 
     private final jwtservice jwtService;
     private final UserDetailsService userDetailsService;
 
 
-    @Autowired
-    public jwtauth(@Lazy jwtservice jwtService,@Lazy UserDetailsService userDetailsService) {
-        this.jwtService = jwtService;
-        this.userDetailsService = userDetailsService;
-    }
+    //@Autowired
+    //public jwtauth(@Lazy jwtservice jwtService,@Lazy UserDetailsService userDetailsService) {
+      //  this.jwtService = jwtService;
+        //this.userDetailsService = userDetailsService;
+    //}
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
         String path = request.getRequestURI();
-        return path.equals("/auth/login") || path.equals("/auth/register") || path.equals("/auth/generateToken") || path.equals("/auth/welcome");
+        return path.equals("/auth/login") || path.equals("/auth/register") || path.equals("/auth/generateToken") || path.equals("/auth/welcome") || path.equals("/auth/registercoach") || path.equals("/auth/logincoach")|| path.startsWith("/v3/api-docs")
+                || path.startsWith("/swagger-ui");
     }
 
     @Override
@@ -45,9 +46,14 @@ public class jwtauth extends OncePerRequestFilter {
 
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             token = authHeader.substring(7);
-            username = jwtService.extractUsername(token);
+            try {
+                username = jwtService.extractUsername(token);
+            } catch (Exception ex) {
+                // token parsing failed -> continue without authentication (or you can set error)
+                filterChain.doFilter(request, response);
+                return;
+            }
         }
-
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
             if (jwtService.validateToken(token, userDetails)) {

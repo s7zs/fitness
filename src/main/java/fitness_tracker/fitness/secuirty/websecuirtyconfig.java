@@ -2,6 +2,7 @@ package fitness_tracker.fitness.secuirty;
 
 import fitness_tracker.fitness.secuirty.jwt.jwtservice;
 import jakarta.servlet.Filter;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationProvider;
 import fitness_tracker.fitness.secuirty.jwt.jwtauth;
@@ -27,8 +28,9 @@ public class websecuirtyconfig {
     private final UserDetailsService userDetailsService;
     private final jwtservice jwtService;
 
-   @Autowired
-    public websecuirtyconfig(UserDetailsService userDetailsService, jwtservice jwtService) {
+
+    @Autowired
+    public websecuirtyconfig(@Qualifier("unifiedauthservice") UserDetailsService userDetailsService, @Lazy jwtservice jwtService) {
         this.userDetailsService = userDetailsService;
         this.jwtService = jwtService;
     }
@@ -47,7 +49,7 @@ public class websecuirtyconfig {
                 // Configure endpoint authorization
                 .authorizeHttpRequests(auth -> auth
                         // Public endpoints
-                        .requestMatchers("/auth/welcome", "/auth/register", "/auth/generateToken", "/auth/login").permitAll()
+                        .requestMatchers("/auth/welcome", "/auth/register", "/auth/generateToken", "/auth/login", "/auth/registercoach", "/auth/logincoach","/auth/user/AllUsers","/auth/user/Allcoach", "/v3/api-docs/**", "/swagger-ui/**").permitAll()
 
                         // Role-based endpoints
                         .requestMatchers("/auth/user/**").hasAuthority("ROLE_USER")

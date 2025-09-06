@@ -8,7 +8,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
-public class loginregister {
+public class  loginregister {
     private final UserRepo userRepo;
     private final PasswordEncoder passwordEncoder;
 
@@ -18,10 +18,6 @@ public class loginregister {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public String addUser(users userInfo) {
-        userInfo.setPassword(passwordEncoder.encode(userInfo.getPassword()));
-        userRepo.save(userInfo);
-        return "User added successfully!";
-    }
+
 
 }

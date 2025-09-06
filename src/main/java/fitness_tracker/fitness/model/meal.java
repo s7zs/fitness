@@ -1,6 +1,7 @@
 package fitness_tracker.fitness.model;
 
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.DecimalMin;
@@ -29,6 +30,7 @@ public class meal {
     @Size(min = 5, max = 100)
     private String meal_name;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Date time;
 
     @DecimalMin("0.1")

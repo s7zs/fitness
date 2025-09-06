@@ -19,9 +19,11 @@ public class workoutplan {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "progress_seq")
     @SequenceGenerator(name = "progress_seq", sequenceName = "progress_sequence", allocationSize = 600)
     private long workoutid;
+
     @NonNull
     @Positive
     private Duration  time;
+
     @Valid
     @OneToOne
     @JoinColumn(name = "userid")
@@ -34,7 +36,6 @@ public class workoutplan {
             inverseJoinColumns = @JoinColumn(name = "exercise_id")
     )
     private List<exercise> exercises;
-
 
 
 }

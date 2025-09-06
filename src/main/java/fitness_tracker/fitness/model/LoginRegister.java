@@ -18,24 +18,24 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class LoginRegister {
-@Id
-@GeneratedValue(strategy = GenerationType.IDENTITY)
-private long sessionid;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long sessionid;
 
-@PastOrPresent
-@NotNull
-private Date startdate;
+    @PastOrPresent
+    @NotNull
+    private Date startdate;
 
-@FutureOrPresent
-@NotNull
-private Date endate;
+    @FutureOrPresent
+    @NotNull
+    private Date endate;
 
-@ManyToOne
-@JoinColumn(name = "loginRegister")
-private Coach coach;
-@ManyToOne
-@JoinColumn(name = "user_id")
-private users users;
+    @ManyToOne
+    @JoinColumn(name = "loginRegister")
+    private Coach coach;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private users users;
 
 
 

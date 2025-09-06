@@ -9,10 +9,10 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface WorkoutplanRepo extends JpaRepository<workoutplan,Long > {
-    @Query(nativeQuery = true , value = "SELECT * FROM  workoutplan where user = :userid")
-workoutplan getuserworkoutplan(Long userid);
-    List<workoutplan> findByUser(users user);
+    Optional<workoutplan> findByUser(users user);
+    Optional<workoutplan> findByUserUserid(Long userId);
 }

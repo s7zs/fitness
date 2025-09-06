@@ -1,71 +1,86 @@
 package fitness_tracker.fitness.service;
 
+import fitness_tracker.fitness.Repository.ExerciseRepo;
 import fitness_tracker.fitness.Repository.UserRepo;
 import fitness_tracker.fitness.Repository.WorkoutplanRepo;
+import fitness_tracker.fitness.model.exercise;
 import fitness_tracker.fitness.model.users;
 import fitness_tracker.fitness.model.workoutplan;
-import fitness_tracker.fitness.secuirty.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 @Service
 
 public class Workoutservice {
     @Autowired
-    private WorkoutplanRepo workoutPlanRepository;
-
+    private WorkoutplanRepo workoutPlanRepo;
     @Autowired
-    private SecurityUtils securityUtils;
+    private userservice userservice;
     @Autowired
     private UserRepo userRepo;
+    @Autowired
+    private ExerciseRepo exerciseRepo;
 
-    public List<workoutplan> getCurrentWorkoutPlan() throws  Exception{
-        Long userId = securityUtils.getCurrentUserId();
-        return workoutPlanRepository.finfbyuserid(userId);
-    }
 
-    public workoutplan createworkoutplan(Long userid ,workoutplan plan){
-    Long coachid = securityUtils.getCurrentUserId();
-    users trainee = userRepo.findById(userid)
-            .orElseThrow(()-> new RuntimeException("user not found"));
-    plan.setUser(trainee);
-    plan.setTime(plan.getTime());
-    plan.setExercises(plan.getExercises());
-    return workoutPlanRepository.save(plan);
-    }
-    public workoutplan updateworkoutplan(Long planid,workoutplan updateplan){
-        workoutplan existing = workoutPlanRepository.findById(planid)
-                .orElseThrow(() -> new RuntimeException("Plan not found"));
+    public workoutplan createWorkoutPlanForUser(Long userId, workoutplan plan) {
+        // Find the target user
+        users targetUser = userRepo.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
 
-        existing.setTime(updateplan.getTime());
-        existing.setUser(updateplan.getUser());
-        existing.setExercises(updateplan.getExercises());
-        return workoutPlanRepository.save(existing);
-    }
+        // Check if user already has workout plan
+        Optional<workoutplan> existingPlan = workoutPlanRepo.findByUser(targetUser);
+        if (existingPlan.isPresent()) {
+            throw new RuntimeException("User already has a workout plan. Update it instead of creating new one.");
+        }
 
-    public void deleteWorkoutPlan(Long planId) {
-        workoutPlanRepository.deleteById(planId);
+        // Set the user for the plan
+        plan.setUser(targetUser);
+
+        // Save and return
+        return workoutPlanRepo.save(plan);
+
     }
 
 
-    public List<workoutplan> getWorkoutPlansForUser(Long userId) {
-        users trainee = userRepo.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-        return workoutPlanRepository.findByUser(trainee);
+    public workoutplan updateWorkoutPlanForUser(Long userId, workoutplan updatedPlan) {
+        users targetUser = userRepo.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
+
+        workoutplan existingPlan = workoutPlanRepo.findByUser(targetUser)
+                .orElseThrow(() -> new RuntimeException("No workout plan found for user ID: " + userId));
+
+        // Update the existing plan
+        existingPlan.setTime(updatedPlan.getTime());
+        // check exercise is exist
+        Set<exercise> savedExercises = new HashSet<>();
+        for (exercise ex : updatedPlan.getExercises()) {
+            exercise saved = exerciseRepo.findById(ex.getExerciseid())
+                    .orElseGet(() -> exerciseRepo.save(ex));
+            savedExercises.add(saved);
+        }
+        existingPlan.setExercises(updatedPlan.getExercises());
+
+        return workoutPlanRepo.save(existingPlan);
     }
 
-
-    public List<workoutplan> getWorkoutPlansForCurrentCoach() {
-        Long coachId = securityUtils.getCurrentUserId();
-
-        throw new UnsupportedOperationException( );
+    public workoutplan getCurrentUserWorkoutPlan() {
+        users currentUser = userservice.getCurrentUserProfile();
+        return workoutPlanRepo.findByUser(currentUser)
+                .orElseThrow(() -> new RuntimeException("No workout plan found for user: " + currentUser.getEmail()));
     }
-
-
-
-
+    public workoutplan getWorkoutPlanByUserId(Long userId) {
+        return workoutPlanRepo.findByUserUserid(userId)
+                .orElseThrow(() -> new RuntimeException("No workout plan found for user ID: " + userId));
+    }
+    public boolean hasWorkoutPlan() {
+        users currentUser = userservice.getCurrentUserProfile();
+        return workoutPlanRepo.findByUser(currentUser).isPresent();
+    }
 
 
 }
