@@ -1,6 +1,7 @@
 package fitness_tracker.fitness.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.PastOrPresent;
 import lombok.AllArgsConstructor;
@@ -42,5 +43,6 @@ public class nutritionplan {
             joinColumns = @JoinColumn(name = "nutrition_plan_id"),
             inverseJoinColumns = @JoinColumn(name = "meal_id")
     )
+    @JsonManagedReference
     private Set<meal> meals = new HashSet<>();
 }

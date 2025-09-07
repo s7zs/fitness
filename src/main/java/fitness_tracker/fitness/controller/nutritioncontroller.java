@@ -1,6 +1,8 @@
 package fitness_tracker.fitness.controller;
 
 import fitness_tracker.fitness.dto.CreateNutritionPlanRequest;
+import fitness_tracker.fitness.dto.MealResponse;
+import fitness_tracker.fitness.model.meal;
 import fitness_tracker.fitness.model.nutritionplan;
 import fitness_tracker.fitness.service.NutritionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/auth/nutrition")
@@ -90,11 +93,31 @@ public class nutritioncontroller {
             }
 
             nutritionplan plan = nutritionService.getCurrentUserNutritionPlan();
-            return ResponseEntity.ok(plan.getMeals());
+            
+            // Convert meals to DTOs to avoid circular reference
+            Set<MealResponse> mealResponses = plan.getMeals().stream()
+                    .map(this::convertToMealResponse)
+                    .collect(Collectors.toSet());
+            
+            return ResponseEntity.ok(mealResponses);
 
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Error retrieving meals: " + e.getMessage());
         }
+    }
+    
+    /**
+     * Convert meal entity to MealResponse DTO
+     */
+    private MealResponse convertToMealResponse(meal meal) {
+        MealResponse response = new MealResponse();
+        response.setMeal_id(meal.getMeal_id());
+        response.setMeal_name(meal.getMeal_name());
+        response.setTime(meal.getTime());
+        response.setGramofcarb(meal.getGramofcarb());
+        response.setGramofprotien(meal.getGramofprotien());
+        response.setGramoffat(meal.getGramoffat());
+        return response;
     }
 
     /**

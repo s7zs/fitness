@@ -1,6 +1,7 @@
 package fitness_tracker.fitness.model;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.DecimalMax;
@@ -46,6 +47,7 @@ public class meal {
     private double gramoffat;
 
     @ManyToMany(mappedBy = "meals", fetch = FetchType.LAZY)
+    @JsonBackReference
     private Set<nutritionplan> nutritionplans = new HashSet<>();
 
 }
