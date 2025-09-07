@@ -102,7 +102,7 @@ public class usercontroller {
     }
 
 
-    @PostMapping("/createplan/{userId}")
+   /* @PostMapping("/createplan/{userId}")
     public ResponseEntity<?> createPlan(@PathVariable Long userId, @RequestBody nutritionplan plan) {
         try {
             nutritionplan saved = nutritionService.createNutritionPlanForUser(userId, plan);
@@ -113,6 +113,7 @@ public class usercontroller {
     }
 
     // ✅ Update plan for a specific user
+
     @PutMapping("/{userId}")
     public ResponseEntity<?> updatePlan(@PathVariable Long userId, @RequestBody nutritionplan plan) {
         try {
@@ -152,7 +153,7 @@ public class usercontroller {
             return ResponseEntity.badRequest().body("Error retrieving meals: " + e.getMessage());
         }
     }
-
+*/
     @GetMapping("/workout")
     public ResponseEntity<?> getMyWorkoutPlan() {
         try {
@@ -184,7 +185,5 @@ public class usercontroller {
             return ResponseEntity.badRequest().body("Error retrieving exercises: " + e.getMessage());
         }
     }
-
-
 
 }

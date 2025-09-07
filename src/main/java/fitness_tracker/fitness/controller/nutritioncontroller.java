@@ -37,7 +37,7 @@ public class nutritioncontroller {
      * Update nutrition plan for a specific user
      * PUT /auth/nutrition/plan/{userId}
      */
-    @PutMapping("/plan/{userId}")
+    @PutMapping("/updateplan/{userId}")
     public ResponseEntity<?> updateNutritionPlanForUser(@PathVariable Long userId, @RequestBody nutritionplan plan) {
         try {
             nutritionplan updated = nutritionService.updateNutritionPlanForUser(userId, plan);
@@ -51,7 +51,7 @@ public class nutritioncontroller {
      * Get nutrition plan for a specific user by user ID
      * GET /auth/nutrition/plan/{userId}
      */
-    @GetMapping("/plan/{userId}")
+    @GetMapping("/getplan/{userId}")
     public ResponseEntity<?> getNutritionPlanByUserId(@PathVariable Long userId) {
         try {
             nutritionplan plan = nutritionService.getNutritionPlanByUserId(userId);
