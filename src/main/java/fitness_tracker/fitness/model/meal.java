@@ -45,7 +45,7 @@ public class meal {
     @DecimalMax("50.9")
     private double gramoffat;
 
-    @ManyToMany(mappedBy = "meals")
+    @ManyToMany(mappedBy = "meals", fetch = FetchType.LAZY)
     private Set<nutritionplan> nutritionplans = new HashSet<>();
 
 }
