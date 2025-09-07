@@ -28,92 +28,88 @@ public class NutritionService {
 
 @Transactional
     public nutritionplan createNutritionPlanForUser(Long userId, nutritionplan plan) {
-        // Find the target user
-        users targetUser = userRepo.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
-        Optional<nutritionplan> existingPlan = nutritionPlanRepository.findByUser(targetUser);
-        if (existingPlan.isPresent()) {
-            throw new RuntimeException("User already has a nutrition plan. Update it instead of creating new one.");
-        }
+        try {
+            // Find the target user
+            users targetUser = userRepo.findById(userId)
+                    .orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
+            
+            Optional<nutritionplan> existingPlan = nutritionPlanRepository.findByUser(targetUser);
+            if (existingPlan.isPresent()) {
+                throw new RuntimeException("User already has a nutrition plan. Update it instead of creating new one.");
+            }
 
-        // Create new nutrition plan
-        nutritionplan newPlan = new nutritionplan();
-        newPlan.setStartdate(plan.getStartdate());
-        newPlan.setEnddate(plan.getEnddate());
-        newPlan.setUser(targetUser);
+            // Create new nutrition plan
+            nutritionplan newPlan = new nutritionplan();
+            newPlan.setStartdate(plan.getStartdate());
+            newPlan.setEnddate(plan.getEnddate());
+            newPlan.setUser(targetUser);
 
-        // Handle meals - save them first if they don't have IDs
-        Set<meal> mealsToSave = new HashSet<>();
-        if (plan.getMeals() != null) {
-            for (meal meal : plan.getMeals()) {
-                if (meal.getMeal_id() == 0) {
-                    // New meal, save it first
-                    meal savedMeal = mealRepo.save(meal);
-                    mealsToSave.add(savedMeal);
-                } else {
-                    // Existing meal, just add it
-                    meal existingMeal = mealRepo.findById(meal.getMeal_id())
-                            .orElseThrow(() -> new RuntimeException("Meal not found with ID: " + meal.getMeal_id()));
-                    mealsToSave.add(existingMeal);
+            // Handle meals - save them first if they don't have IDs
+            Set<meal> mealsToSave = new HashSet<>();
+            if (plan.getMeals() != null && !plan.getMeals().isEmpty()) {
+                for (meal meal : plan.getMeals()) {
+                    if (meal.getMeal_id() == 0) {
+                        // New meal, save it first
+                        meal savedMeal = mealRepo.save(meal);
+                        mealsToSave.add(savedMeal);
+                    } else {
+                        // Existing meal, just add it
+                        meal existingMeal = mealRepo.findById(meal.getMeal_id())
+                                .orElseThrow(() -> new RuntimeException("Meal not found with ID: " + meal.getMeal_id()));
+                        mealsToSave.add(existingMeal);
+                    }
                 }
             }
+
+            newPlan.setMeals(mealsToSave);
+
+            // Save the nutrition plan
+            nutritionplan savedPlan = nutritionPlanRepository.save(newPlan);
+
+            return savedPlan;
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to create nutrition plan: " + e.getMessage(), e);
         }
-
-        newPlan.setMeals(mealsToSave);
-
-        // Save the nutrition plan
-        nutritionplan savedPlan = nutritionPlanRepository.save(newPlan);
-
-        // Update the bidirectional relationship
-        for (meal meal : mealsToSave) {
-            meal.getNutritionplans().add(savedPlan);
-        }
-
-        return savedPlan;
     }
     @Transactional
     public nutritionplan updateNutritionPlanForUser(Long userId, nutritionplan updatedPlan) {
-        users targetUser = userRepo.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
+        try {
+            users targetUser = userRepo.findById(userId)
+                    .orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
 
-        nutritionplan existingPlan = nutritionPlanRepository.findByUser(targetUser)
-                .orElseThrow(() -> new RuntimeException("No nutrition plan found for user ID: " + userId));
-        
-        existingPlan.setStartdate(updatedPlan.getStartdate());
-        existingPlan.setEnddate(updatedPlan.getEnddate());
+            nutritionplan existingPlan = nutritionPlanRepository.findByUser(targetUser)
+                    .orElseThrow(() -> new RuntimeException("No nutrition plan found for user ID: " + userId));
+            
+            existingPlan.setStartdate(updatedPlan.getStartdate());
+            existingPlan.setEnddate(updatedPlan.getEnddate());
 
-        // Handle meals update
-        if (updatedPlan.getMeals() != null) {
-            // Clear existing meals from the bidirectional relationship
-            for (meal meal : existingPlan.getMeals()) {
-                meal.getNutritionplans().remove(existingPlan);
+            // Handle meals update
+            if (updatedPlan.getMeals() != null) {
+                existingPlan.setMeals(updatedPlan.getMeals());
             }
-            
-            // Set new meals
-            existingPlan.setMeals(updatedPlan.getMeals());
-            
-            // Update bidirectional relationship
-            for (meal meal : updatedPlan.getMeals()) {
-                meal.getNutritionplans().add(existingPlan);
-            }
+
+            return nutritionPlanRepository.save(existingPlan);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to update nutrition plan: " + e.getMessage(), e);
         }
-
-        return nutritionPlanRepository.save(existingPlan);
     }
     @Transactional
     public nutritionplan addMealToCurrentUserPlan(Long mealId) {
-        users currentUser = userservice.getCurrentUserProfile();
+        try {
+            users currentUser = userservice.getCurrentUserProfile();
 
-        nutritionplan plan = nutritionPlanRepository.findByUser(currentUser)
-                .orElseThrow(() -> new RuntimeException("No nutrition plan found."));
+            nutritionplan plan = nutritionPlanRepository.findByUser(currentUser)
+                    .orElseThrow(() -> new RuntimeException("No nutrition plan found."));
 
-        meal mealObj = mealRepo.findById(mealId)
-                .orElseThrow(() -> new RuntimeException("Meal not found."));
+            meal mealObj = mealRepo.findById(mealId)
+                    .orElseThrow(() -> new RuntimeException("Meal not found."));
 
-        plan.getMeals().add(mealObj);
-        mealObj.getNutritionplans().add(plan);
-        
-        return nutritionPlanRepository.save(plan);
+            plan.getMeals().add(mealObj);
+            
+            return nutritionPlanRepository.save(plan);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to add meal to nutrition plan: " + e.getMessage(), e);
+        }
     }
 
 
@@ -138,44 +134,39 @@ public class NutritionService {
      */
     @Transactional
     public nutritionplan createNutritionPlanForUserWithMealIds(Long userId, CreateNutritionPlanRequest request) {
-        // Find the target user
-        users targetUser = userRepo.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
-        
-        // Check if user already has a nutrition plan
-        Optional<nutritionplan> existingPlan = nutritionPlanRepository.findByUser(targetUser);
-        if (existingPlan.isPresent()) {
-            throw new RuntimeException("User already has a nutrition plan. Update it instead of creating new one.");
-        }
-
-        // Create new nutrition plan
-        nutritionplan plan = new nutritionplan();
-        plan.setStartdate(request.getStartdate());
-        plan.setEnddate(request.getEnddate());
-        plan.setUser(targetUser);
-
-        // Add meals by IDs if provided
-        if (request.getMealIds() != null && !request.getMealIds().isEmpty()) {
-            Set<meal> meals = new HashSet<>();
-            for (Long mealId : request.getMealIds()) {
-                meal mealObj = mealRepo.findById(mealId)
-                        .orElseThrow(() -> new RuntimeException("Meal not found with ID: " + mealId));
-                meals.add(mealObj);
+        try {
+            // Find the target user
+            users targetUser = userRepo.findById(userId)
+                    .orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
+            
+            // Check if user already has a nutrition plan
+            Optional<nutritionplan> existingPlan = nutritionPlanRepository.findByUser(targetUser);
+            if (existingPlan.isPresent()) {
+                throw new RuntimeException("User already has a nutrition plan. Update it instead of creating new one.");
             }
-            plan.setMeals(meals);
-        }
 
-        // Save the nutrition plan
-        nutritionplan savedPlan = nutritionPlanRepository.save(plan);
+            // Create new nutrition plan
+            nutritionplan plan = new nutritionplan();
+            plan.setStartdate(request.getStartdate());
+            plan.setEnddate(request.getEnddate());
+            plan.setUser(targetUser);
 
-        // Update bidirectional relationship
-        if (request.getMealIds() != null && !request.getMealIds().isEmpty()) {
-            for (meal meal : savedPlan.getMeals()) {
-                meal.getNutritionplans().add(savedPlan);
+            // Add meals by IDs if provided
+            if (request.getMealIds() != null && !request.getMealIds().isEmpty()) {
+                Set<meal> meals = new HashSet<>();
+                for (Long mealId : request.getMealIds()) {
+                    meal mealObj = mealRepo.findById(mealId)
+                            .orElseThrow(() -> new RuntimeException("Meal not found with ID: " + mealId));
+                    meals.add(mealObj);
+                }
+                plan.setMeals(meals);
             }
-        }
 
-        return savedPlan;
+            // Save the nutrition plan
+            return nutritionPlanRepository.save(plan);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to create nutrition plan with meal IDs: " + e.getMessage(), e);
+        }
     }
 
     /**
@@ -183,20 +174,23 @@ public class NutritionService {
      */
     @Transactional
     public nutritionplan addMealsToUserPlan(Long userId, Set<Long> mealIds) {
-        users targetUser = userRepo.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
+        try {
+            users targetUser = userRepo.findById(userId)
+                    .orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
 
-        nutritionplan plan = nutritionPlanRepository.findByUser(targetUser)
-                .orElseThrow(() -> new RuntimeException("No nutrition plan found for user ID: " + userId));
+            nutritionplan plan = nutritionPlanRepository.findByUser(targetUser)
+                    .orElseThrow(() -> new RuntimeException("No nutrition plan found for user ID: " + userId));
 
-        for (Long mealId : mealIds) {
-            meal mealObj = mealRepo.findById(mealId)
-                    .orElseThrow(() -> new RuntimeException("Meal not found with ID: " + mealId));
-            plan.getMeals().add(mealObj);
-            mealObj.getNutritionplans().add(plan);
+            for (Long mealId : mealIds) {
+                meal mealObj = mealRepo.findById(mealId)
+                        .orElseThrow(() -> new RuntimeException("Meal not found with ID: " + mealId));
+                plan.getMeals().add(mealObj);
+            }
+
+            return nutritionPlanRepository.save(plan);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to add meals to nutrition plan: " + e.getMessage(), e);
         }
-
-        return nutritionPlanRepository.save(plan);
     }
 
 
