@@ -3,6 +3,7 @@ package fitness_tracker.fitness.service;
 import fitness_tracker.fitness.Repository.MealRepo;
 import fitness_tracker.fitness.Repository.NutritionplanRepo;
 import fitness_tracker.fitness.Repository.UserRepo;
+import fitness_tracker.fitness.dto.CreateNutritionPlanRequest;
 import fitness_tracker.fitness.model.meal;
 import fitness_tracker.fitness.model.nutritionplan;
 import fitness_tracker.fitness.model.users;
@@ -92,6 +93,61 @@ public class NutritionService {
     public boolean hasNutritionPlan() {
         users currentUser = userservice.getCurrentUserProfile();
         return nutritionPlanRepository.findByUser(currentUser).isPresent();
+    }
+
+    /**
+     * Create nutrition plan for user using DTO with meal IDs
+     */
+    @Transactional
+    public nutritionplan createNutritionPlanForUserWithMealIds(Long userId, CreateNutritionPlanRequest request) {
+        // Find the target user
+        users targetUser = userRepo.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
+        
+        // Check if user already has a nutrition plan
+        Optional<nutritionplan> existingPlan = nutritionPlanRepository.findByUser(targetUser);
+        if (existingPlan.isPresent()) {
+            throw new RuntimeException("User already has a nutrition plan. Update it instead of creating new one.");
+        }
+
+        // Create new nutrition plan
+        nutritionplan plan = new nutritionplan();
+        plan.setStartdate(request.getStartdate());
+        plan.setEnddate(request.getEnddate());
+        plan.setUser(targetUser);
+
+        // Add meals by IDs if provided
+        if (request.getMealIds() != null && !request.getMealIds().isEmpty()) {
+            Set<meal> meals = new HashSet<>();
+            for (Long mealId : request.getMealIds()) {
+                meal mealObj = mealRepo.findById(mealId)
+                        .orElseThrow(() -> new RuntimeException("Meal not found with ID: " + mealId));
+                meals.add(mealObj);
+            }
+            plan.setMeals(meals);
+        }
+
+        return nutritionPlanRepository.save(plan);
+    }
+
+    /**
+     * Add meals to existing nutrition plan by meal IDs
+     */
+    @Transactional
+    public nutritionplan addMealsToUserPlan(Long userId, Set<Long> mealIds) {
+        users targetUser = userRepo.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
+
+        nutritionplan plan = nutritionPlanRepository.findByUser(targetUser)
+                .orElseThrow(() -> new RuntimeException("No nutrition plan found for user ID: " + userId));
+
+        for (Long mealId : mealIds) {
+            meal mealObj = mealRepo.findById(mealId)
+                    .orElseThrow(() -> new RuntimeException("Meal not found with ID: " + mealId));
+            plan.getMeals().add(mealObj);
+        }
+
+        return nutritionPlanRepository.save(plan);
     }
 
 
