@@ -7,6 +7,7 @@ import lombok.*;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @AllArgsConstructor
@@ -16,8 +17,7 @@ import java.util.List;
 
 public class workoutplan {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "progress_seq")
-    @SequenceGenerator(name = "progress_seq", sequenceName = "progress_sequence", allocationSize = 600)
+    @GeneratedValue(strategy = GenerationType.IDENTITY )
     private long workoutid;
 
     @NonNull
@@ -35,7 +35,7 @@ public class workoutplan {
             joinColumns = @JoinColumn(name = "workout_plan_id"),
             inverseJoinColumns = @JoinColumn(name = "exercise_id")
     )
-    private List<exercise> exercises;
+    private Set<exercise> exercises;
 
 
 }

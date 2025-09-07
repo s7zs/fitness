@@ -54,12 +54,14 @@ public class usercontroller {
     }
 
     @PutMapping("/setprofile")
-    public ResponseEntity<?> updateProfile(@RequestBody setuserinfo userInfo, Principal Principal) {
-        String email = Principal.getName();
-        users updateUser = userservice.updateUserProfile(userInfo);
-        return ResponseEntity.ok(updateUser);
+    public ResponseEntity<?> updateProfile(@RequestBody setuserinfo userInfo) {
+        try {
+            users updatedUser = userservice.updateUserProfile(userInfo);
+            return ResponseEntity.ok(updatedUser);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error updating profile: " + e.getMessage());
+        }
     }
-
     @GetMapping("/coach")
     public ResponseEntity<List<Coach>> getCoaches() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

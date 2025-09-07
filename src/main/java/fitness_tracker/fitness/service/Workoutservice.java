@@ -40,10 +40,23 @@ public class Workoutservice {
 
         // Set the user for the plan
         plan.setUser(targetUser);
+// ✅ معالجة التمارين بشكل صحيح
+        if (plan.getExercises() != null && !plan.getExercises().isEmpty()) {
+            Set<exercise> savedExercises = new HashSet<>();
+            for (exercise ex : plan.getExercises()) {
+                exercise saved;
+                if (ex.getExerciseid() != 0) {
+                    saved = exerciseRepo.findById(ex.getExerciseid())
+                            .orElseGet(() -> exerciseRepo.save(ex));
+                } else {
+                    saved = exerciseRepo.save(ex);
+                }
+                savedExercises.add(saved);
+            }
+            plan.setExercises(savedExercises);
+        }
 
-        // Save and return
         return workoutPlanRepo.save(plan);
-
     }
 
 
@@ -56,14 +69,21 @@ public class Workoutservice {
 
         // Update the existing plan
         existingPlan.setTime(updatedPlan.getTime());
-        // check exercise is exist
-        Set<exercise> savedExercises = new HashSet<>();
-        for (exercise ex : updatedPlan.getExercises()) {
-            exercise saved = exerciseRepo.findById(ex.getExerciseid())
-                    .orElseGet(() -> exerciseRepo.save(ex));
-            savedExercises.add(saved);
+// ✅ معالجة صحيحة للتمارين
+        if (updatedPlan.getExercises() != null) {
+            Set<exercise> savedExercises = new HashSet<>();
+            for (exercise ex : updatedPlan.getExercises()) {
+                exercise saved;
+                if (ex.getExerciseid() != 0) {
+                    saved = exerciseRepo.findById(ex.getExerciseid())
+                            .orElseGet(() -> exerciseRepo.save(ex));
+                } else {
+                    saved = exerciseRepo.save(ex);
+                }
+                savedExercises.add(saved);
+            }
+            existingPlan.setExercises(savedExercises); // ✅ استخدام المحفوظ الجديد
         }
-        existingPlan.setExercises(updatedPlan.getExercises());
 
         return workoutPlanRepo.save(existingPlan);
     }

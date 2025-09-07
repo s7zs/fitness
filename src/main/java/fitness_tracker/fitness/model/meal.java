@@ -1,21 +1,19 @@
-package fitness_tracker.fitness.model;
+// fitness_tracker.fitness.model.meal.java
 
+package fitness_tracker.fitness.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
-import java.util.Date;
+import java.time.LocalTime;
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
+@Table(name = "meals")
 @AllArgsConstructor
 @NoArgsConstructor
 @Setter
@@ -23,29 +21,38 @@ import java.util.Set;
 public class meal {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "progress_seq")
-    @SequenceGenerator(name = "progress_seq", sequenceName = "progress_sequence", allocationSize = 600)
-    private long meal_id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY )
+    private Long meal_id;
 
-    @Size(min = 5, max = 100)
+    @Size(min = 3, max = 100, message = "Meal name must be between 3 and 100 characters")
+    @Column(nullable = false)
     private String meal_name;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    private Date time;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
+    private LocalTime time; // وقت الوجبة — مثال: 08:00
 
-    @DecimalMin("0.1")
-    @DecimalMax("50.9")
+    @DecimalMin(value = "0.0", message = "Carbs cannot be negative")
     private double gramofcarb;
 
-    @DecimalMin("0.1")
-    @DecimalMax("50.9")
+    @DecimalMin(value = "0.0", message = "Protein cannot be negative")
     private double gramofprotien;
 
-    @DecimalMin("0.1")
-    @DecimalMax("50.9")
+    @DecimalMin(value = "0.0", message = "Fat cannot be negative")
     private double gramoffat;
 
+    // علاقة ManyToMany مع الخطط — وجبة واحدة يمكن أن تظهر في أكثر من خطة
     @ManyToMany(mappedBy = "meals")
     private Set<nutritionplan> nutritionplans = new HashSet<>();
 
+    // إضافة خطة لهذه الوجبة
+    public void addNutritionPlan(nutritionplan plan) {
+        this.nutritionplans.add(plan);
+        plan.getMeals().add(this);
+    }
+
+    // حذف خطة من هذه الوجبة
+    public void removeNutritionPlan(nutritionplan plan) {
+        this.nutritionplans.remove(plan);
+        plan.getMeals().remove(this);
+    }
 }

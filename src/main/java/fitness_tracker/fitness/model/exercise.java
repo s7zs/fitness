@@ -23,8 +23,7 @@ import java.util.Set;
 public class exercise {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "progress_seq")
-    @SequenceGenerator(name = "progress_seq", sequenceName = "progress_sequence", allocationSize = 600)
+    @GeneratedValue(strategy = GenerationType.IDENTITY )
     private long exerciseid;
 
     @NotNull

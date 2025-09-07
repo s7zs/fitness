@@ -1,6 +1,6 @@
 package fitness_tracker.fitness.controller;
 
-import fitness_tracker.fitness.Repository.CoachRepo;
+import fitness_tracker.fitness.model.exercise;
 import fitness_tracker.fitness.model.nutritionplan;
 import fitness_tracker.fitness.model.users;
 import fitness_tracker.fitness.model.workoutplan;
@@ -23,11 +23,14 @@ public class coachcontroller {
 
     private final coachservice coachservice;
     private final Workoutservice workoutservice;
+
     private final NutritionService nutritionService;
+
     @Autowired
-    public coachcontroller(coachservice coachservice, @Lazy Workoutservice workoutservice,@Lazy NutritionService nutritionService) {
+    public coachcontroller(coachservice coachservice, @Lazy Workoutservice workoutservice,  @Lazy NutritionService nutritionService) {
         this.coachservice = coachservice;
         this.workoutservice = workoutservice;
+
         this.nutritionService = nutritionService;
     }
 
@@ -65,7 +68,7 @@ public class coachcontroller {
     @PutMapping("/nutrition/update/{userId}")
     public ResponseEntity<?> updateNutritionPlan(@PathVariable Long userId, @RequestBody nutritionplan plan) {
         try {
-            nutritionplan updated = nutritionService.updateNutritionPlanForUser(userId, plan);
+            nutritionplan updated = nutritionService.updateNutritionTemplate(userId, plan);
             return ResponseEntity.ok(updated);
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -92,4 +95,7 @@ public class coachcontroller {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
+
+
 }
